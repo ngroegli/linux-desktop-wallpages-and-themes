@@ -1,0 +1,52 @@
+/* Base template CSS (copied from sample_theme/template.css) */
+:root{
+  --bg-color: #071018;
+  --accent-1: #00ff88; /* main accent */
+  --accent-2: #00ddff; /* secondary */
+  --panel-bg: rgba(0,20,20,0.7);
+  --panel-border: rgba(0,255,136,0.18);
+  --muted: rgba(255,255,255,0.06);
+  --font-mono: 'Courier New', monospace;
+  /* extended variables for shadows and panel tones */
+  --panel-shadow: rgba(0,255,136,0.12);
+  --title-shadow: rgba(0,221,255,0.25);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body.template-root{
+  background: linear-gradient(180deg,var(--bg-color), #001018 60%);
+  font-family: var(--font-mono);
+  color: var(--accent-1);
+  overflow:hidden;
+}
+
+.top-clock{position:absolute;left:20px;top:48px;z-index:20;pointer-events:none}
+.top-clock-time{font-size:32px;color:var(--accent-1);letter-spacing:3px;font-weight:700;text-shadow:0 0 10px rgba(0,255,136,0.6)}
+.top-clock-date{font-size:12px;color:var(--accent-2);margin-top:6px;letter-spacing:2px}
+
+.right-panel{position:absolute;right:20px;top:48px;width:320px;z-index:20;pointer-events:none}
+.panel-section{background:var(--panel-bg);border:1px solid var(--panel-border);padding:16px;margin-bottom:12px;border-radius:6px;backdrop-filter: blur(6px)}
+.panel-title{font-size:12px;color:var(--accent-2);margin-bottom:10px;letter-spacing:2px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--accent-1);margin-bottom:8px}
+.progress-bar{height:8px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));width:0%;transition:width 0.4s ease}
+.status-indicator{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent-1);box-shadow:0 0 8px var(--panel-shadow);margin-right:8px}
+
+.center-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;pointer-events:auto;text-align:center;padding:40px}
+.image-holder{width:60vmin;height:36vmin;max-width:1100px;max-height:700px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2));display:flex;align-items:center;justify-content:center;border:1px solid var(--muted);box-shadow:0 10px 60px rgba(0,0,0,0.7)}
+.image-holder img{width:100%;height:100%;object-fit:cover;display:block}
+.center-title{margin-top:18px;font-size:28px;color:var(--accent-2);letter-spacing:2px;text-shadow:0 0 8px var(--title-shadow)}
+
+.decor-overlay{position:absolute;inset:0;pointer-events:none;z-index:5;background-image:radial-gradient(ellipse at center, rgba(255,255,255,0.015), transparent 30%)}
+
+@media (max-width:800px){
+  .right-panel{width:240px;right:10px}
+  .top-clock-time{font-size:26px}
+  .center-title{font-size:20px}
+  .image-holder{width:80vmin;height:48vmin}
+}
+
+/* Example override comment
+:root{ --bg-color: #08131a; --accent-1: #ffd166; --accent-2: #06d6a0 }
+*/

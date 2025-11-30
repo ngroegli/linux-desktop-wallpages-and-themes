@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wallpaper Template (base)</title>
+  <link rel="stylesheet" href="template.css">
+</head>
+<body class="template-root">
+
+  <!-- Top-left clock -->
+  <div class="top-clock">
+    <div class="top-clock-time" id="top-clock-time">00:00:00</div>
+    <div class="top-clock-date" id="top-clock-date">LOADING...</div>
+  </div>
+
+  <!-- Right-side info panels -->
+  <div class="right-panel">
+    <div class="panel-section">
+      <div class="panel-title"><span class="status-indicator"></span>SYSTEM</div>
+      <div class="stat-row"><span class="stat-label">CPU</span><span class="stat-value" id="cpu-value">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="cpu-bar" style="width:0%"></div></div>
+
+      <div class="stat-row"><span class="stat-label">CORES</span><span class="stat-value" id="cpu-cores">0</span></div>
+      <div class="stat-row"><span class="stat-label">FREQ</span><span class="stat-value" id="cpu-freq">0 MHz</span></div>
+
+      <div class="stat-row" style="margin-top:12px;"><span class="stat-label">RAM</span><span class="stat-value" id="ram-value">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="ram-bar" style="width:0%"></div></div>
+      <div class="stat-row"><span class="stat-label">TOTAL</span><span class="stat-value" id="ram-total">0 GB</span></div>
+      <div class="stat-row"><span class="stat-label">USED</span><span class="stat-value" id="ram-used">0 GB</span></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-title">DISK</div>
+      <div class="stat-row"><span class="stat-label">USAGE</span><span class="stat-value" id="disk-percent">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="disk-bar" style="width:0%"></div></div>
+      <div class="stat-row"><span class="stat-label">TOTAL</span><span class="stat-value" id="disk-total">0 GB</span></div>
+      <div class="stat-row"><span class="stat-label">FREE</span><span class="stat-value" id="disk-free">0 GB</span></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-title">NETWORK</div>
+      <div class="stat-row"><span class="stat-label">STATUS</span><span class="stat-value" id="net-status">ONLINE</span></div>
+      <div class="stat-row"><span class="stat-label">LATENCY</span><span class="stat-value" id="latency-value">0ms</span></div>
+      <div class="stat-row"><span class="stat-label">SENT</span><span class="stat-value" id="net-sent">0 B</span></div>
+      <div class="stat-row"><span class="stat-label">RECV</span><span class="stat-value" id="net-recv">0 B</span></div>
+    </div>
+  </div>
+
+  <!-- Center placeholder: image + title -->
+  <main class="center-stage" id="center-stage">
+    <div class="image-holder" id="image-holder">
+      <img id="center-image" alt="placeholder image" src="" />
+    </div>
+    <h1 class="center-title" id="center-title">Your Title Here</h1>
+  </main>
+
+  <div class="decor-overlay" aria-hidden="true"></div>
+
+  <!-- Auto-select theme: set TEMPLATE_THEME before loading the template script -->
+  <script>
+    // Default to the ice-blue theme. Change to 'default' or another folder name to switch.
+    window.TEMPLATE_THEME = 'ice-blue';
+  </script>
+  <script src="template.js"></script>
+</body>
+</html>

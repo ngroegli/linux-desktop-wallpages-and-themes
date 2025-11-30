@@ -1,0 +1,9 @@
+{
+  "--bg-color": "#081425",
+  "--accent-1": "#aeefff",
+  "--accent-2": "#7fd7ff",
+  "--panel-bg": "rgba(8,20,32,0.75)",
+  "--panel-border": "rgba(160,240,255,0.12)",
+  "--panel-shadow": "rgba(120,200,255,0.12)",
+  "--title-shadow": "rgba(127,215,255,0.18)"
+}
