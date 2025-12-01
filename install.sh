@@ -70,12 +70,12 @@ echo ""
 
 # Install themes to user profile
 USER_HOME=$(eval echo ~$INSTALL_USER)
-THEMES_DIR="$USER_HOME/DesktopBackgrounds"
+THEMES_DIR="$USER_HOME/WallpagesThemes"
 
 echo "==> Installing themes to user profile"
 echo "    Target directory: $THEMES_DIR"
 
-# Create or clean DesktopBackgrounds directory
+# Create or clean WallpagesThemes directory
 echo "    Creating directory structure..."
 sudo -u "$INSTALL_USER" mkdir -p "$THEMES_DIR"
 
@@ -100,22 +100,6 @@ if [ -f "$REPO_DIR/build.sh" ]; then
     sudo -u "$INSTALL_USER" chmod +x "$THEMES_DIR/build.sh"
     echo "    Build script installed: $THEMES_DIR/build.sh"
 fi
-
-# Create asset folders for each theme
-echo "    Creating asset folders for themes..."
-for theme_dir in "$THEMES_DIR"/*/ ; do
-    if [ -d "$theme_dir" ]; then
-        theme_name=$(basename "$theme_dir")
-        # Skip _base and config directories
-        if [ "$theme_name" != "_base" ] && [ "$theme_name" != "config" ]; then
-            asset_dir="$theme_dir/assets"
-            if [ ! -d "$asset_dir" ]; then
-                sudo -u "$INSTALL_USER" mkdir -p "$asset_dir"
-                echo "    Created: $theme_name/assets/"
-            fi
-        fi
-    fi
-done
 
 echo "    Setting permissions..."
 sudo -u "$INSTALL_USER" chmod -R u+rwX,go+rX "$THEMES_DIR"

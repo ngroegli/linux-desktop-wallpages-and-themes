@@ -231,14 +231,14 @@ With background animation:
 ### Step 4: Build and Test
 
 ```bash
-# Build single-file wallpaper
+# Build single-file wallpaper (outputs to ./output/)
 ./build.sh
 
 # Test in browser
 xdg-open theme/_base/background.html
 
 # Or with Hidamari
-cp wallpaper-my-theme.html ~/DesktopBackgrounds/
+cp output/wallpaper-my-theme.html ~/WallpagesThemes/
 ```
 
 ## Theme Configuration
@@ -397,7 +397,7 @@ Normalized: [1.0, 0.42, 0.21]
 3. **Build and test single file:**
    ```bash
    ./build.sh
-   xdg-open wallpaper-my-theme.html
+   xdg-open output/wallpaper-my-theme.html
    ```
 
 ### Integration Testing
@@ -405,7 +405,7 @@ Normalized: [1.0, 0.42, 0.21]
 1. **Install to Hidamari:**
    ```bash
    sudo ./install.sh
-   # Themes installed to ~/DesktopBackgrounds/
+   # Themes installed to ~/WallpagesThemes/
    ```
 
 2. **Test with OpenBar:**

@@ -37,11 +37,11 @@ Note: Background effects are theme-specific:
 ## Using the Wallpaper
 
 **For Hidamari (single-file):**
-1. After installation, open `~/DesktopBackgrounds/wallpaper-<theme>.html`
-2. Example: `~/DesktopBackgrounds/wallpaper-ubuntu.html`
+1. After installation, open `~/WallpagesThemes/wallpaper-<theme>.html`
+2. Example: `~/WallpagesThemes/wallpaper-ubuntu.html`
 
 **For Browser (multi-file):**
-1. Open `~/DesktopBackgrounds/base/background.html`
+1. Open `~/WallpagesThemes/base/background.html`
 2. Change theme in `config.json`
 
 **Note:** If API is unreachable, stats will be randomized (shows "RANDOMIZED" status)
@@ -70,10 +70,10 @@ sudo systemctl disable web-wallpaper-api
 After making changes, rebuild the single-file wallpapers for Hidamari:
 
 ```bash
-# Build all themes
-./build.sh ~/DesktopBackgrounds
+# Build all themes (output to ./output directory)
+./build.sh
 
-# Or run the installer (rebuilds automatically)
+# Or run the installer (rebuilds automatically to ~/WallpagesThemes)
 sudo ./install.sh
 ```
 
@@ -134,10 +134,10 @@ WALLPAPER_TEMPLATE.applyTheme({
 ## File Locations
 
 **Installed (after running install.sh):**
-- **Hidamari wallpapers**: `~/DesktopBackgrounds/wallpaper-*.html`
-- **Browser wallpaper**: `~/DesktopBackgrounds/base/background.html`
-- **Config**: `~/DesktopBackgrounds/base/config.json`
-- **Themes**: `~/DesktopBackgrounds/matrix-green-blue/`, etc.
+- **Hidamari wallpapers**: `~/WallpagesThemes/wallpaper-*.html`
+- **Browser wallpaper**: `~/WallpagesThemes/base/background.html`
+- **Config**: `~/WallpagesThemes/base/config.json`
+- **Themes**: `~/WallpagesThemes/matrix-green-blue/`, etc.
 - **Service File**: `/etc/systemd/system/web-wallpaper-api.service`
 - **Logs**: `sudo journalctl -u web-wallpaper-api`
 

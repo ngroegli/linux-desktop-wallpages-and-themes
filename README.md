@@ -1,4 +1,27 @@
-# web-desktop-wallpapers
+# Linux Desktop Wallpages and Themes
+
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
+![Canvas](https://img.shields.io/badge/Canvas-API-orange?style=flat)
+
+**Topics:** `linux-desktop` `wallpaper` `live-wallpaper` `system-metrics` `flask-api` `canvas-animation` `hidamari` `gnome-shell` `openbar` `cyberpunk` `synthwave` `systemd` `rest-api` `python` `javascript` `html5-canvas` `desktop-customization` `animated-wallpaper` `theming`
+
+- [Linux Desktop Wallpages and Themes](#linux-desktop-wallpages-and-themes)
+  - [Features](#features)
+  - [Quick Start](#quick-start)
+  - [Available Themes](#available-themes)
+  - [Documentation](#documentation)
+    - [Getting Started](#getting-started)
+    - [Architecture](#architecture)
+    - [Development](#development)
+  - [Project Structure](#project-structure)
+  - [Development](#development-1)
+  - [API Endpoints](#api-endpoints)
+  - [License](#license)
+
 
 A configurable web-based desktop wallpaper system with live system metrics, multiple themes, and a Flask API backend. Designed for use with Hidamari and similar wallpaper engines.
 
@@ -21,14 +44,14 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
    ```
    This installs:
    - Flask API as systemd service
-   - Themes to `~/DesktopBackgrounds/`
+   - Themes to `~/WallpagesThemes/`
    - Single-file wallpapers for Hidamari
 
 2. **Use the wallpaper:**
-   - **Hidamari**: `~/DesktopBackgrounds/wallpaper-<theme>.html`
-   - **Browser**: `~/DesktopBackgrounds/_base/background.html`
+   - **Hidamari**: `~/WallpagesThemes/wallpaper-<theme>.html`
+   - **Browser**: `~/WallpagesThemes/_base/background.html`
 
-3. **Configure** (optional) in `~/DesktopBackgrounds/config/config.json`:
+3. **Configure** (optional) in `~/WallpagesThemes/config/config.json`:
    ```json
    {
      "theme": "ice-blue",
@@ -40,7 +63,7 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
    }
    ```
 
-   Then rebuild: `./build.sh ~/DesktopBackgrounds`
+   Then rebuild: `./build.sh`
 
 ## Available Themes
 
@@ -66,21 +89,21 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 
 ## Documentation
 
-### 🚀 Getting Started
+### Getting Started
 - **[Quick Start Guide](docs/getting-started/quickstart.md)** - 5-minute setup
 - **[Installation Guide](docs/getting-started/installation.md)** - Detailed installation
 - **[Usage Guide](docs/getting-started/usage.md)** - Configuration and usage
 
-### 🏗️ Architecture
+### Architecture
 - **[System Architecture](docs/architecture/overview.md)** - Complete technical architecture
 - **[Architecture Diagrams](docs/architecture/diagrams/)** - Visual system diagrams
 
-### 💻 Development
+### Development
 - **[Flask API Reference](docs/development/api.md)** - REST API documentation
 - **[Theme Development](docs/development/themes.md)** - Creating custom themes
 - **[Hidamari Integration](docs/development/hidamari.md)** - Wallpaper engine setup
 
-📚 **[Full Documentation](docs/)** - Complete documentation index
+**[Full Documentation](docs/)** - Complete documentation index
 
 ## Project Structure
 

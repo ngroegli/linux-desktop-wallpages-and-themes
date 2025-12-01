@@ -293,7 +293,7 @@ web-desktop-wallpapers/
 ### Installed Structure (User Home)
 
 ```
-~/DesktopBackgrounds/              # Installed by install.sh
+~/WallpagesThemes/                 # Installed by install.sh
 ├── _base/                         # Base templates
 ├── config/                        # Configuration
 ├── matrix-green-blue/             # Themes (all 12)

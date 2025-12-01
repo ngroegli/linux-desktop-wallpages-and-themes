@@ -113,11 +113,11 @@ docs/## Diagrams
 sudo ./install.sh
 
 # Themes installed to:
-~/DesktopBackgrounds/
+~/WallpagesThemes/
 ```
 
 ### Configuration
-Edit `~/DesktopBackgrounds/config/config.json`:
+Edit `~/WallpagesThemes/config/config.json`:
 ```json
 {
   "theme": "matrix-green-blue",
@@ -156,7 +156,7 @@ sudo journalctl -u web-wallpaper-api -f
 # Build single-file wallpapers
 ./build.sh
 
-# Output: wallpaper-<theme>.html for each theme
+# Output: ./output/wallpaper-<theme>.html for each theme
 ```
 
 ## Learning Path

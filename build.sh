@@ -5,19 +5,25 @@ set -e
 # This script combines HTML, CSS, JS, and config into standalone files
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET_DIR="${1:-$SCRIPT_DIR/theme}"
+SOURCE_DIR="$(pwd)"
+TARGET_DIR="$SOURCE_DIR/_output"
 
-if [ ! -d "$TARGET_DIR/_base" ]; then
-    echo "ERROR: Target directory must contain _base/ folder"
-    echo "Usage: $0 <target_directory>"
+# Create output directory if it doesn't exist
+mkdir -p "$TARGET_DIR"
+
+if [ ! -d "$SOURCE_DIR/_base" ]; then
+    echo "ERROR: Current directory must contain _base/ folder"
+    echo "Current directory: $SOURCE_DIR"
+    echo "Please run this script from a directory containing theme files (_base/, config/, theme folders)"
     exit 1
 fi
 
 echo "==> Building single-file wallpapers for Hidamari"
-echo "    Source: $TARGET_DIR"
+echo "    Source: $SOURCE_DIR"
+echo "    Output: $TARGET_DIR"
 
 # Read config.json to get available themes
-CONFIG_FILE="$TARGET_DIR/config/config.json"
+CONFIG_FILE="$SOURCE_DIR/config/config.json"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "ERROR: config.json not found at $CONFIG_FILE"
     exit 1
@@ -25,7 +31,7 @@ fi
 
 # Get list of theme directories
 THEMES=()
-for theme_dir in "$TARGET_DIR"/*/ ; do
+for theme_dir in "$SOURCE_DIR"/*/ ; do
     if [ -d "$theme_dir" ]; then
         theme_name=$(basename "$theme_dir")
         if [ "$theme_name" != "_base" ] && [ "$theme_name" != "config" ] && [ -f "$theme_dir/theme.json" ]; then
@@ -50,16 +56,16 @@ build_theme() {
     echo "    Building: wallpaper-${theme_name}.html"
 
     # Read base files
-    local html_file="$TARGET_DIR/_base/background.html"
-    local css_file="$TARGET_DIR/_base/template.css"
-    local js_template="$TARGET_DIR/_base/template.js"
-    local js_bg_manager="$TARGET_DIR/_base/background-manager.js"
+    local html_file="$SOURCE_DIR/_base/background.html"
+    local css_file="$SOURCE_DIR/_base/template.css"
+    local js_template="$SOURCE_DIR/_base/template.js"
+    local js_bg_manager="$SOURCE_DIR/_base/background-manager.js"
 
     # Read theme files
-    local theme_json="$TARGET_DIR/$theme_name/theme.json"
+    local theme_json="$SOURCE_DIR/$theme_name/theme.json"
     local theme_bg_js=""
-    if [ -f "$TARGET_DIR/$theme_name/background.js" ]; then
-        theme_bg_js="$TARGET_DIR/$theme_name/background.js"
+    if [ -f "$SOURCE_DIR/$theme_name/background.js" ]; then
+        theme_bg_js="$SOURCE_DIR/$theme_name/background.js"
     fi
 
     # Check if all required files exist
