@@ -1,0 +1,10 @@
+{
+  "--bg-primary": "#0a0f1a",
+  "--bg-panel": "rgba(15, 25, 40, 0.85)",
+  "--accent-1": "#ff6600",
+  "--accent-2": "#0099ff",
+  "--muted": "rgba(0, 153, 255, 0.15)",
+  "--panel-shadow": "rgba(0, 153, 255, 0.5)",
+  "--title-shadow": "rgba(255, 102, 0, 0.6)",
+  "backgroundMode": "fortress"
+}

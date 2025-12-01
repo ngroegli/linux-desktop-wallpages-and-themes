@@ -1,0 +1,10 @@
+{
+  "--bg-primary": "#0a0015",
+  "--bg-panel": "rgba(20, 10, 40, 0.85)",
+  "--accent-1": "#ff00ff",
+  "--accent-2": "#00ffff",
+  "--muted": "rgba(255, 0, 255, 0.15)",
+  "--panel-shadow": "rgba(255, 0, 255, 0.5)",
+  "--title-shadow": "rgba(0, 255, 255, 0.6)",
+  "backgroundMode": "synthwave"
+}

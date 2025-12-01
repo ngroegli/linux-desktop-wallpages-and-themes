@@ -1,0 +1,572 @@
+direction: down
+
+title: {
+  label: Communication Flow - Complete System Sequences
+  near: top-center
+  shape: text
+  style: {
+    font-size: 26
+    bold: true
+    fill: "#1a1a1a"
+  }
+}
+
+# ============================================================================
+# SEQUENCE 1: INSTALLATION & SETUP
+# ============================================================================
+sequence1: Installation & Setup {
+  shape: rectangle
+  style.fill: "#e8f5e9"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 3
+
+  s1_title: {
+    shape: text
+    label: "📦 SEQUENCE 1: Installation & Setup"
+    style.font-size: 18
+    style.bold: true
+  }
+
+  s1_user: User {
+    shape: person
+    style.fill: "#a5d6a7"
+  }
+
+  s1_installer: install.sh {
+    shape: stored_data
+    style.fill: "#c8e6c9"
+  }
+
+  s1_systemd: systemd {
+    shape: hexagon
+    style.fill: "#81c784"
+  }
+
+  s1_filesystem: ~/DesktopBackgrounds/ {
+    shape: cylinder
+    style.fill: "#66bb6a"
+  }
+
+  s1_api: Flask API {
+    shape: stored_data
+    style.fill: "#4caf50"
+  }
+
+  # Installation flow
+  s1_user -> s1_installer: 1. Run ./install.sh {
+    style.stroke: "#2e7d32"
+    style.stroke-width: 2
+  }
+
+  s1_installer -> s1_filesystem: 2. Create directories\n(_base, config, 12 themes) {
+    style.stroke: "#388e3c"
+    style.stroke-width: 2
+  }
+
+  s1_installer -> s1_filesystem: 3. Copy template files\n(HTML, CSS, JS) {
+    style.stroke: "#388e3c"
+    style.stroke-width: 2
+  }
+
+  s1_installer -> s1_filesystem: 4. Deploy theme files\n(12 themes × 3 files each) {
+    style.stroke: "#388e3c"
+    style.stroke-width: 2
+  }
+
+  s1_installer -> s1_systemd: 5. Install systemd service\nweb-wallpaper-api.service {
+    style.stroke: "#43a047"
+    style.stroke-width: 2
+  }
+
+  s1_systemd -> s1_api: 6. Start Flask API\n(port 5050) {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+    style.animated: true
+  }
+
+  s1_installer -> s1_user: 7. Installation complete! {
+    style.stroke: "#2e7d32"
+    style.stroke-width: 2
+  }
+}
+
+# ============================================================================
+# SEQUENCE 2: BUILD PROCESS
+# ============================================================================
+sequence2: Build Process {
+  shape: rectangle
+  style.fill: "#fce4ec"
+  style.stroke: "#c2185b"
+  style.stroke-width: 3
+
+  s2_title: {
+    shape: text
+    label: "🔨 SEQUENCE 2: Build Process"
+    style.font-size: 18
+    style.bold: true
+  }
+
+  s2_user: Developer {
+    shape: person
+    style.fill: "#f8bbd0"
+  }
+
+  s2_build: build.sh {
+    shape: stored_data
+    style.fill: "#f48fb1"
+  }
+
+  s2_base: _base/ templates {
+    shape: rectangle
+    style.fill: "#f06292"
+  }
+
+  s2_config: config/ {
+    shape: cylinder
+    style.fill: "#ec407a"
+  }
+
+  s2_themes: 12 theme/ folders {
+    shape: rectangle
+    style.fill: "#e91e63"
+  }
+
+  s2_output: wallpaper-*.html {
+    shape: document
+    style.fill: "#ffffff"
+    style.stroke: "#c2185b"
+  }
+
+  # Build flow
+  s2_user -> s2_build: 1. Run ./build.sh {
+    style.stroke: "#c2185b"
+    style.stroke-width: 2
+  }
+
+  s2_build -> s2_base: 2. Read background.html\ntemplate.css, template.js\nbackground-manager.js {
+    style.stroke: "#d81b60"
+    style.stroke-width: 2
+  }
+
+  s2_build -> s2_config: 3. Read config.json\n(default theme settings) {
+    style.stroke: "#d81b60"
+    style.stroke-width: 2
+  }
+
+  s2_build -> s2_themes: 4. For each theme:\nRead theme.json\nRead background.js {
+    style.stroke: "#d81b60"
+    style.stroke-width: 2
+  }
+
+  s2_build -> s2_output: 5. Generate single HTML file:\n• Inline CSS\n• Embed all JS\n• Embed theme data\n• No external deps {
+    style.stroke: "#ad1457"
+    style.stroke-width: 3
+  }
+
+  s2_output -> s2_user: 6. 12 standalone files ready\nfor Hidamari deployment {
+    style.stroke: "#c2185b"
+    style.stroke-width: 2
+  }
+}
+
+# ============================================================================
+# SEQUENCE 3: WALLPAPER INITIALIZATION
+# ============================================================================
+sequence3: Wallpaper Initialization {
+  shape: rectangle
+  style.fill: "#e1f5fe"
+  style.stroke: "#0277bd"
+  style.stroke-width: 3
+
+  s3_title: {
+    shape: text
+    label: "🚀 SEQUENCE 3: Wallpaper Initialization"
+    style.font-size: 18
+    style.bold: true
+  }
+
+  s3_user: User {
+    shape: person
+    style.fill: "#b3e5fc"
+  }
+
+  s3_hidamari: Hidamari / Browser {
+    shape: rectangle
+    style.fill: "#81d4fa"
+  }
+
+  s3_html: background.html {
+    shape: page
+    style.fill: "#ffffff"
+    style.stroke: "#0277bd"
+  }
+
+  s3_template: template.js {
+    shape: stored_data
+    style.fill: "#4fc3f7"
+  }
+
+  s3_config: config.json {
+    shape: cylinder
+    style.fill: "#ffeb3b"
+    style.stroke: "#f57f17"
+  }
+
+  s3_theme: Theme Files {
+    shape: rectangle
+    style.fill: "#29b6f6"
+  }
+
+  s3_bgmgr: background-manager.js {
+    shape: stored_data
+    style.fill: "#03a9f4"
+  }
+
+  s3_canvas: Canvas 2D {
+    shape: rectangle
+    style.fill: "#039be5"
+  }
+
+  # Init flow
+  s3_user -> s3_hidamari: 1. Sets wallpaper {
+    style.stroke: "#0277bd"
+    style.stroke-width: 2
+  }
+
+  s3_hidamari -> s3_html: 2. Loads HTML {
+    style.stroke: "#0288d1"
+    style.stroke-width: 2
+  }
+
+  s3_html -> s3_template: 3. Executes template.js {
+    style.stroke: "#0288d1"
+    style.stroke-width: 2
+  }
+
+  s3_template -> s3_config: 4. Fetches config.json\n(which theme to load) {
+    style.stroke: "#f57f17"
+    style.stroke-width: 2
+  }
+
+  s3_config -> s3_template: 5. Returns active theme name {
+    style.stroke: "#f57f17"
+    style.stroke-width: 2
+  }
+
+  s3_template -> s3_theme: 6. Loads theme.json\n(colors, settings) {
+    style.stroke: "#0288d1"
+    style.stroke-width: 2
+  }
+
+  s3_template -> s3_bgmgr: 7. Calls background-manager\nto start animation {
+    style.stroke: "#039be5"
+    style.stroke-width: 2
+  }
+
+  s3_bgmgr -> s3_theme: 8. Dynamically loads\ntheme/*/background.js {
+    style.stroke: "#039be5"
+    style.stroke-width: 2
+  }
+
+  s3_bgmgr -> s3_canvas: 9. Initializes Canvas 2D\nStarts animation loop {
+    style.stroke: "#0277bd"
+    style.stroke-width: 3
+    style.animated: true
+  }
+
+  s3_template -> s3_user: 10. Wallpaper ready! {
+    style.stroke: "#0277bd"
+    style.stroke-width: 2
+  }
+}
+
+# ============================================================================
+# SEQUENCE 4: API POLLING (EVERY 5 SECONDS)
+# ============================================================================
+sequence4: API Polling Loop {
+  shape: rectangle
+  style.fill: "#fff3e0"
+  style.stroke: "#e65100"
+  style.stroke-width: 3
+
+  s4_title: {
+    shape: text
+    label: "🔄 SEQUENCE 4: API Polling (every 5s)"
+    style.font-size: 18
+    style.bold: true
+  }
+
+  s4_template: template.js {
+    shape: stored_data
+    style.fill: "#ffe0b2"
+  }
+
+  s4_flask: Flask API {
+    shape: stored_data
+    style.fill: "#ffcc80"
+  }
+
+  s4_psutil: psutil library {
+    shape: package
+    style.fill: "#ffb74d"
+  }
+
+  s4_kernel: Linux Kernel {
+    shape: hexagon
+    style.fill: "#ffa726"
+  }
+
+  s4_panels: UI Panels {
+    shape: rectangle
+    style.fill: "#ff9800"
+  }
+
+  # Polling flow
+  s4_template -> s4_flask: 1. HTTP GET /api/stats {
+    style.stroke: "#e65100"
+    style.stroke-width: 3
+    style.animated: true
+    label: "Every 5 seconds"
+  }
+
+  s4_flask -> s4_psutil: 2. Query all metrics:\ncpu_percent()\nvirtual_memory()\ndisk_usage()\nnet_io_counters() {
+    style.stroke: "#f57c00"
+    style.stroke-width: 2
+  }
+
+  s4_psutil -> s4_kernel: 3. System calls\n/proc/* filesystem {
+    style.stroke: "#ef6c00"
+    style.stroke-width: 2
+  }
+
+  s4_kernel -> s4_psutil: 4. Hardware state {
+    style.stroke: "#ef6c00"
+    style.stroke-width: 2
+  }
+
+  s4_psutil -> s4_flask: 5. Returns metrics {
+    style.stroke: "#f57c00"
+    style.stroke-width: 2
+  }
+
+  s4_flask -> s4_template: 6. JSON response\nwith all metrics {
+    style.stroke: "#e65100"
+    style.stroke-width: 3
+    style.animated: true
+  }
+
+  s4_template -> s4_panels: 7. Updates UI panels\n(CPU, RAM, Disk, Network) {
+    style.stroke: "#ff6f00"
+    style.stroke-width: 2
+  }
+
+  s4_panels -> s4_template: 8. Wait 5 seconds...\nRepeat! {
+    style.stroke: "#e65100"
+    style.stroke-width: 2
+    style.stroke-dash: 5
+    style.animated: true
+  }
+}
+
+# ============================================================================
+# SEQUENCE 5: THEME SWITCHING
+# ============================================================================
+sequence5: Theme Switching {
+  shape: rectangle
+  style.fill: "#f3e5f5"
+  style.stroke: "#6a1b9a"
+  style.stroke-width: 3
+
+  s5_title: {
+    shape: text
+    label: "🎨 SEQUENCE 5: Theme Switching"
+    style.font-size: 18
+    style.bold: true
+  }
+
+  s5_user: User {
+    shape: person
+    style.fill: "#e1bee7"
+  }
+
+  s5_config: config.json {
+    shape: cylinder
+    style.fill: "#ffeb3b"
+    style.stroke: "#f57f17"
+  }
+
+  s5_template: template.js {
+    shape: stored_data
+    style.fill: "#ce93d8"
+  }
+
+  s5_newtheme: New Theme Files {
+    shape: rectangle
+    style.fill: "#ba68c8"
+  }
+
+  s5_bgmgr: background-manager.js {
+    shape: stored_data
+    style.fill: "#ab47bc"
+  }
+
+  s5_oldcanvas: Old Canvas {
+    shape: rectangle
+    style.fill: "#9c27b0"
+    style.stroke-dash: 3
+  }
+
+  s5_newcanvas: New Canvas {
+    shape: rectangle
+    style.fill: "#8e24aa"
+  }
+
+  s5_openbar: OpenBar Extension {
+    shape: rectangle
+    style.fill: "#7b1fa2"
+  }
+
+  # Theme switch flow
+  s5_user -> s5_config: 1. Edits config.json\nChanges "activeTheme" {
+    style.stroke: "#f57f17"
+    style.stroke-width: 2
+  }
+
+  s5_user -> s5_template: 2. Reloads wallpaper\n(F5 or Hidamari refresh) {
+    style.stroke: "#6a1b9a"
+    style.stroke-width: 2
+  }
+
+  s5_template -> s5_config: 3. Reads new config {
+    style.stroke: "#f57f17"
+    style.stroke-width: 2
+  }
+
+  s5_template -> s5_newtheme: 4. Loads new theme.json\nand background.js {
+    style.stroke: "#8e24aa"
+    style.stroke-width: 2
+  }
+
+  s5_template -> s5_bgmgr: 5. Stops old animation {
+    style.stroke: "#9c27b0"
+    style.stroke-width: 2
+  }
+
+  s5_bgmgr -> s5_oldcanvas: 6. Destroys old canvas {
+    style.stroke: "#9c27b0"
+    style.stroke-dash: 3
+  }
+
+  s5_bgmgr -> s5_newcanvas: 7. Creates new canvas\nStarts new animation {
+    style.stroke: "#7b1fa2"
+    style.stroke-width: 3
+    style.animated: true
+  }
+
+  s5_user -> s5_openbar: 8. (Optional) Import new\nopenbar-theme-config {
+    style.stroke: "#4a148c"
+    style.stroke-width: 2
+    style.stroke-dash: 3
+  }
+
+  s5_newcanvas -> s5_user: 9. New theme active! {
+    style.stroke: "#6a1b9a"
+    style.stroke-width: 2
+  }
+}
+
+# ============================================================================
+# SEQUENCE 6: ERROR HANDLING & FALLBACK
+# ============================================================================
+sequence6: Error Handling {
+  shape: rectangle
+  style.fill: "#ffebee"
+  style.stroke: "#c62828"
+  style.stroke-width: 3
+
+  s6_title: {
+    shape: text
+    label: "⚠️ SEQUENCE 6: Error Handling & Fallback"
+    style.font-size: 18
+    style.bold: true
+  }
+
+  s6_template: template.js {
+    shape: stored_data
+    style.fill: "#ffcdd2"
+  }
+
+  s6_flask: Flask API {
+    shape: stored_data
+    style.fill: "#ef9a9a"
+    style.stroke-dash: 3
+  }
+
+  s6_panels: UI Panels {
+    shape: rectangle
+    style.fill: "#e57373"
+  }
+
+  s6_canvas: Canvas Animation {
+    shape: rectangle
+    style.fill: "#ef5350"
+  }
+
+  # Error flow
+  s6_template -> s6_flask: 1. HTTP GET /api/stats {
+    style.stroke: "#c62828"
+    style.stroke-width: 2
+  }
+
+  s6_flask -> s6_template: 2. ❌ Connection refused\nTimeout / Network error {
+    style.stroke: "#d32f2f"
+    style.stroke-width: 3
+    style.stroke-dash: 3
+  }
+
+  s6_template -> s6_template: 3. Catch error\nEnter fallback mode {
+    style.stroke: "#e53935"
+    style.stroke-width: 2
+  }
+
+  s6_template -> s6_panels: 4. Display "API Unavailable"\nShow placeholder text {
+    style.stroke: "#f44336"
+    style.stroke-width: 2
+  }
+
+  s6_template -> s6_canvas: 5. Animation continues\nindependently {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+    style.animated: true
+  }
+
+  s6_template -> s6_flask: 6. Keep retrying every 5s\nAuto-recovery when API returns {
+    style.stroke: "#c62828"
+    style.stroke-width: 2
+    style.stroke-dash: 5
+  }
+}
+
+# ============================================================================
+# LEGEND
+# ============================================================================
+legend: {
+  shape: rectangle
+  near: bottom-center
+  style.fill: "#f5f5f5"
+  style.stroke: "#424242"
+  style.stroke-width: 2
+
+  label: |md
+    **Complete System Sequences:**
+    
+    🟢 **Sequence 1:** Installation & Setup - Deploy files, install systemd service, start API
+    🔴 **Sequence 2:** Build Process - Compile 12 themes into standalone HTML files
+    🔵 **Sequence 3:** Wallpaper Initialization - Load config, theme, start animation
+    🟠 **Sequence 4:** API Polling - Fetch system metrics every 5 seconds (continuous)
+    🟣 **Sequence 5:** Theme Switching - Change themes at runtime, update OpenBar
+    ⚠️ **Sequence 6:** Error Handling - Graceful fallback when API unavailable
+    
+    **Animation Types:** Solid lines = synchronous, Dashed lines = optional/async
+  |
+}

@@ -1,0 +1,10 @@
+{
+  "--bg-color": "#2c001e",
+  "--accent-1": "#e95420",
+  "--accent-2": "#772953",
+  "--panel-bg": "rgba(44,0,30,0.75)",
+  "--panel-border": "rgba(233,84,32,0.2)",
+  "--panel-shadow": "rgba(233,84,32,0.15)",
+  "--title-shadow": "rgba(119,41,83,0.2)",
+  "backgroundMode": "ubuntu-logo"
+}

@@ -1,0 +1,581 @@
+direction: right
+
+title: {
+  label: Web Desktop Wallpaper System - Complete Architecture
+  near: top-center
+  shape: text
+  style: {
+    font-size: 26
+    bold: true
+    fill: "#1a1a1a"
+  }
+}
+
+# ============================================================================
+# USER LAYER
+# ============================================================================
+user: User {
+  shape: person
+  style.fill: "#e3f2fd"
+  style.stroke: "#1976d2"
+  style.stroke-width: 2
+}
+
+desktop: Desktop Environment {
+  shape: rectangle
+  style.fill: "#f3e5f5"
+  style.stroke: "#7b1fa2"
+  style.stroke-width: 2
+
+  hidamari: Hidamari\nWallpaper Engine {
+    shape: rectangle
+    style.fill: "#ce93d8"
+    style.font-size: 12
+  }
+
+  openbar: OpenBar\nGNOME Shell Extension {
+    shape: rectangle
+    style.fill: "#ce93d8"
+    style.font-size: 12
+  }
+
+  browser: Web Browser {
+    shape: rectangle
+    style.fill: "#ce93d8"
+    style.font-size: 12
+  }
+}
+
+# ============================================================================
+# FRONTEND LAYER - Wallpaper Application
+# ============================================================================
+frontend: Wallpaper Frontend {
+  shape: rectangle
+  style.fill: "#e1f5fe"
+  style.stroke: "#0277bd"
+  style.stroke-width: 3
+
+  core: Core Components {
+    shape: rectangle
+    style.fill: "#b3e5fc"
+
+    html: background.html {
+      shape: page
+      style.fill: "#ffffff"
+      style.stroke: "#01579b"
+    }
+
+    css: template.css\n(CSS Variables) {
+      shape: document
+      style.fill: "#ffffff"
+      style.stroke: "#01579b"
+    }
+
+    js_template: template.js {
+      shape: stored_data
+      style.fill: "#81d4fa"
+      label: |md
+        **template.js**
+        • Config loading
+        • API polling (5s)
+        • UI updates
+        • Theme switching
+        • Fallback logic
+      |
+    }
+
+    js_bgmgr: background-manager.js {
+      shape: stored_data
+      style.fill: "#81d4fa"
+      label: |md
+        **background-manager.js**
+        • Dynamic script loading
+        • Canvas lifecycle
+        • Animation control
+      |
+    }
+  }
+
+  ui: UI Elements {
+    shape: rectangle
+    style.fill: "#b3e5fc"
+
+    clock: Clock & Date {
+      shape: rectangle
+      style.fill: "#4fc3f7"
+    }
+
+    panels: System Panels {
+      shape: rectangle
+      style.fill: "#4fc3f7"
+      label: |md
+        **4 Info Panels:**
+        • CPU (usage, cores, freq)
+        • RAM (used, total, %)
+        • Disk (used, free, %)
+        • Network (sent, recv)
+      |
+    }
+
+    canvas: Background Canvas {
+      shape: rectangle
+      style.fill: "#4fc3f7"
+      label: "Canvas 2D API\nTheme Animations"
+    }
+  }
+
+  themes: Theme System {
+    shape: rectangle
+    style.fill: "#80deea"
+
+    config_global: config.json {
+      shape: cylinder
+      style.fill: "#ffeb3b"
+      style.stroke: "#f57f17"
+      label: |md
+        **Global Config**
+        • Active theme
+        • API endpoint
+        • Display options
+      |
+    }
+
+    theme_files: 12 Theme Folders {
+      shape: rectangle
+      style.fill: "#4dd0e1"
+      label: |md
+        **Each Theme Contains:**
+        • theme.json (colors, mode)
+        • background.js (animation)
+        • openbar-theme-config (shell)
+      |
+    }
+
+    animations: Theme Animations {
+      shape: rectangle
+      style.fill: "#26c6da"
+      label: |md
+        Matrix rain • Synthwave grid
+        Globe threats • SOC dashboard
+        Circuit paths • Quantum rings
+        Icebergs • Equalizer bars
+        + 4 more unique animations
+      |
+    }
+  }
+}
+
+# ============================================================================
+# BACKEND LAYER - Flask API
+# ============================================================================
+backend: Flask REST API {
+  shape: rectangle
+  style.fill: "#e8f5e9"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 3
+
+  api: API Service {
+    shape: rectangle
+    style.fill: "#c8e6c9"
+
+    app: app.py\n(Flask + CORS) {
+      shape: stored_data
+      style.fill: "#a5d6a7"
+      style.stroke: "#1b5e20"
+    }
+
+    endpoints: REST Endpoints {
+      shape: rectangle
+      style.fill: "#81c784"
+      label: |md
+        **GET /api/stats** ⭐ Recommended
+        GET /api/cpu
+        GET /api/ram
+        GET /api/disk
+        GET /api/network
+        GET /api/health
+      |
+    }
+  }
+
+  service: Service Management {
+    shape: rectangle
+    style.fill: "#c8e6c9"
+
+    systemd: systemd Unit {
+      shape: hexagon
+      style.fill: "#aed581"
+      label: |md
+        **web-wallpaper-api.service**
+        • Auto-start on boot
+        • Auto-restart on crash
+        • User-level isolation
+      |
+    }
+
+    installer: install.sh {
+      shape: document
+      style.fill: "#ffffff"
+      style.stroke: "#2e7d32"
+      label: "Automated\nSetup Script"
+    }
+  }
+}
+
+# ============================================================================
+# DATA LAYER - System Resources
+# ============================================================================
+system: System Resources {
+  shape: rectangle
+  style.fill: "#fff3e0"
+  style.stroke: "#e65100"
+  style.stroke-width: 3
+
+  psutil: psutil Library {
+    shape: package
+    style.fill: "#ffe0b2"
+    style.stroke: "#bf360c"
+    style.stroke-width: 2
+    label: |md
+      **Python psutil**
+      Cross-platform system metrics:
+      • CPU: usage, cores, frequency
+      • Memory: RAM usage, totals
+      • Disk: usage, I/O counters
+      • Network: bytes, packets
+    |
+  }
+
+  os: Operating System {
+    shape: rectangle
+    style.fill: "#ffcc80"
+
+    kernel: Linux Kernel {
+      shape: hexagon
+      style.fill: "#ffb74d"
+      label: "/proc • /sys\nSystem Calls"
+    }
+
+    resources: Hardware {
+      shape: cylinder
+      style.fill: "#ffa726"
+      label: |md
+        CPU Cores
+        RAM Modules
+        Disk Drives
+        Network Interfaces
+      |
+    }
+  }
+}
+
+# ============================================================================
+# FILE SYSTEM
+# ============================================================================
+filesystem: Installed Files {
+  shape: rectangle
+  style.fill: "#f3e5f5"
+  style.stroke: "#6a1b9a"
+  style.stroke-width: 2
+
+  home: ~/DesktopBackgrounds/ {
+    shape: rectangle
+    style.fill: "#e1bee7"
+
+    base_folder: _base/ {
+      shape: rectangle
+      style.fill: "#ce93d8"
+      label: |md
+        **Base Templates**
+        background.html
+        template.css
+        template.js
+        background-manager.js
+      |
+    }
+
+    config_folder: config/ {
+      shape: cylinder
+      style.fill: "#ffeb3b"
+      style.stroke: "#f57f17"
+      label: "config.json"
+    }
+
+    theme_folders: 12 Theme Folders/ {
+      shape: rectangle
+      style.fill: "#ce93d8"
+      label: |md
+        matrix-green-blue/
+        ice-blue/
+        ubuntu/
+        clair-obscur/
+        sunset-equalizer/
+        synth-grid/
+        ascii-galaxy/
+        circuit-board/
+        quantum-tunnel/
+        cyber-fortress/
+        threat-map/
+        soc-blueprint/
+      |
+    }
+
+    built: wallpaper-*.html {
+      shape: document
+      style.fill: "#ffffff"
+      style.stroke: "#6a1b9a"
+      label: |md
+        **Single-file builds**
+        12 standalone HTML files
+        For Hidamari deployment
+      |
+    }
+  }
+}
+
+# ============================================================================
+# BUILD SYSTEM
+# ============================================================================
+build: Build System {
+  shape: rectangle
+  style.fill: "#fce4ec"
+  style.stroke: "#c2185b"
+
+  script: build.sh {
+    shape: document
+    style.fill: "#f8bbd0"
+    style.stroke: "#880e4f"
+    label: |md
+      **Build Script**
+      Bash + jq + sed
+      Compiles multi-file
+      themes → single HTML
+    |
+  }
+}
+
+# ============================================================================
+# CONNECTIONS - User Layer
+# ============================================================================
+user -> desktop.hidamari: Sets wallpaper {
+  style.stroke: "#7b1fa2"
+  style.stroke-width: 2
+}
+
+user -> desktop.browser: Opens in browser {
+  style.stroke: "#7b1fa2"
+  style.stroke-width: 2
+}
+
+user -> desktop.openbar: Imports theme colors {
+  style.stroke: "#7b1fa2"
+  style.stroke-width: 2
+}
+
+# ============================================================================
+# CONNECTIONS - Desktop to Frontend
+# ============================================================================
+desktop.hidamari -> frontend.core.html: Loads wallpaper {
+  style.stroke: "#0277bd"
+  style.stroke-width: 2
+}
+
+desktop.browser -> frontend.core.html: Displays {
+  style.stroke: "#0277bd"
+  style.stroke-width: 2
+}
+
+desktop.openbar -> frontend.themes.theme_files: Reads shell colors {
+  style.stroke: "#7b1fa2"
+  style.stroke-dash: 3
+}
+
+# ============================================================================
+# CONNECTIONS - Frontend Internal
+# ============================================================================
+frontend.core.html -> frontend.core.css: Applies styles {
+  style.stroke: "#0288d1"
+}
+
+frontend.core.html -> frontend.core.js_template: Executes {
+  style.stroke: "#0288d1"
+}
+
+frontend.core.js_template -> frontend.themes.config_global: 1. Load config {
+  style.stroke: "#f57f17"
+  style.stroke-width: 2
+}
+
+frontend.core.js_template -> frontend.themes.theme_files: 2. Load theme {
+  style.stroke: "#0288d1"
+  style.stroke-width: 2
+}
+
+frontend.core.js_template -> frontend.core.js_bgmgr: 3. Init background {
+  style.stroke: "#0288d1"
+}
+
+frontend.core.js_bgmgr -> frontend.themes.animations: 4. Start animation {
+  style.stroke: "#26c6da"
+  style.animated: true
+}
+
+frontend.themes.animations -> frontend.ui.canvas: Renders to {
+  style.stroke: "#26c6da"
+  style.animated: true
+}
+
+frontend.core.js_template -> frontend.ui.clock: Updates every 1s {
+  style.stroke: "#4fc3f7"
+}
+
+frontend.core.js_template -> frontend.ui.panels: Updates every 5s {
+  style.stroke: "#4fc3f7"
+}
+
+# ============================================================================
+# CONNECTIONS - Frontend to Backend (API Polling)
+# ============================================================================
+frontend.core.js_template -> backend.api.endpoints: HTTP GET (every 5s) {
+  style.stroke: "#2e7d32"
+  style.stroke-width: 4
+  style.animated: true
+  label: "Poll /api/stats\nJSON Request"
+}
+
+backend.api.endpoints -> frontend.core.js_template: JSON Response {
+  style.stroke: "#2e7d32"
+  style.stroke-width: 4
+  style.animated: true
+  label: |md
+    **Returns:**
+    CPU, RAM, Disk,
+    Network metrics
+  |
+}
+
+# ============================================================================
+# CONNECTIONS - Backend Internal
+# ============================================================================
+backend.api.app -> backend.api.endpoints: Routes requests {
+  style.stroke: "#388e3c"
+}
+
+backend.api.endpoints -> system.psutil: Query metrics {
+  style.stroke: "#e65100"
+  style.stroke-width: 3
+}
+
+system.psutil -> backend.api.endpoints: Return data {
+  style.stroke: "#e65100"
+  style.stroke-width: 3
+}
+
+# ============================================================================
+# CONNECTIONS - System Layer
+# ============================================================================
+system.psutil -> system.os.kernel: System calls {
+  style.stroke: "#bf360c"
+  style.stroke-width: 2
+}
+
+system.os.kernel -> system.os.resources: Read hardware {
+  style.stroke: "#bf360c"
+  style.stroke-width: 2
+}
+
+system.os.resources -> system.os.kernel: Hardware state {
+  style.stroke: "#bf360c"
+  style.stroke-width: 2
+}
+
+# ============================================================================
+# CONNECTIONS - Service Management
+# ============================================================================
+backend.service.systemd -> backend.api.app: Manages lifecycle {
+  style.stroke: "#43a047"
+  style.stroke-width: 2
+  label: |md
+    Start on boot
+    Auto-restart
+    Logging
+  |
+}
+
+backend.service.installer -> backend.service.systemd: Installs service {
+  style.stroke: "#2e7d32"
+  style.stroke-dash: 3
+}
+
+backend.service.installer -> filesystem.home: Deploys themes {
+  style.stroke: "#6a1b9a"
+  style.stroke-dash: 3
+}
+
+# ============================================================================
+# CONNECTIONS - File System
+# ============================================================================
+frontend.core -> filesystem.home.base_folder: Loads from {
+  style.stroke: "#6a1b9a"
+  style.stroke-dash: 3
+}
+
+frontend.themes -> filesystem.home.config_folder: Reads config {
+  style.stroke: "#f57f17"
+  style.stroke-dash: 3
+}
+
+frontend.themes -> filesystem.home.theme_folders: Loads theme files {
+  style.stroke: "#6a1b9a"
+  style.stroke-dash: 3
+}
+
+# ============================================================================
+# CONNECTIONS - Build System
+# ============================================================================
+build.script -> filesystem.home.base_folder: Reads templates {
+  style.stroke: "#c2185b"
+  style.stroke-dash: 3
+}
+
+build.script -> filesystem.home.config_folder: Embeds config {
+  style.stroke: "#c2185b"
+  style.stroke-dash: 3
+}
+
+build.script -> filesystem.home.theme_folders: Embeds themes {
+  style.stroke: "#c2185b"
+  style.stroke-dash: 3
+}
+
+build.script -> filesystem.home.built: Generates files {
+  style.stroke: "#c2185b"
+  style.stroke-width: 2
+}
+
+# ============================================================================
+# LEGEND
+# ============================================================================
+legend: {
+  shape: rectangle
+  near: bottom-right
+  style.fill: "#f5f5f5"
+  style.stroke: "#424242"
+  style.stroke-width: 2
+
+  label: |md
+    **Architecture Layers:**
+    🔵 Frontend - Wallpaper UI (HTML/CSS/JS)
+    🟢 Backend - Flask API (Python)
+    🟠 System - OS Resources (psutil)
+    🟣 Files - Installed themes
+    🔴 Build - Compilation system
+
+    **Key Features:**
+    • 12 animated themes with Canvas 2D
+    • 5-second polling for live metrics
+    • Graceful fallback when API unavailable
+    • OpenBar integration for shell colors
+    • Single-file builds for easy deployment
+  |
+}

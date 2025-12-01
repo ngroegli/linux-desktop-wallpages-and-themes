@@ -1,0 +1,10 @@
+{
+  "--bg-color": "#0a0a0f",
+  "--accent-1": "#d4af37",
+  "--accent-2": "#f4d03f",
+  "--panel-bg": "rgba(10, 10, 15, 0.85)",
+  "--panel-border": "rgba(212, 175, 55, 0.25)",
+  "--panel-shadow": "rgba(212, 175, 55, 0.15)",
+  "--title-shadow": "rgba(244, 208, 63, 0.3)",
+  "backgroundMode": "expedition"
+}

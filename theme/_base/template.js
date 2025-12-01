@@ -100,28 +100,37 @@
     const base = window.API_BASE || null;
     if(!base) return null;
     try{
-      const [cpuResp, ramResp, diskResp, netResp] = await Promise.all([
-        fetch(base + '/api/cpu'),
-        fetch(base + '/api/ram'),
-        fetch(base + '/api/disk'),
-        fetch(base + '/api/network')
-      ]);
-      const cpuJson = await cpuResp.json();
-      const ramJson = await ramResp.json();
-      const diskJson = await diskResp.json();
-      const netJson = await netResp.json();
-      return { cpu: cpuJson, ram: ramJson, disk: diskJson, network: netJson };
+      // Try unified endpoint first (more efficient)
+      const resp = await fetch(base + '/api/stats', {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache'
+      });
+
+      if(!resp.ok) {
+        console.warn('API returned error:', resp.status, resp.statusText);
+        return null;
+      }
+
+      const data = await resp.json();
+      return data;
     }catch(e){
-      console.warn('Failed to fetch stats', e);
+      console.warn('Failed to fetch stats from', base, '- Error:', e.message);
       return null;
     }
   }
 
   // theme helpers
-  function applyTheme(theme){
+  function applyTheme(theme, themeName){
     if(!theme) return;
     const root = document.documentElement;
-    Object.keys(theme).forEach(k=> root.style.setProperty(k, theme[k]));
+    Object.keys(theme).forEach(k=> {
+      if(k.startsWith('--')) root.style.setProperty(k, theme[k]);
+    });
+    // Load theme-specific background if defined
+    if(theme.backgroundMode && window.WALLPAPER_BACKGROUND && themeName){
+      window.WALLPAPER_BACKGROUND.loadThemeBackground(themeName, theme.backgroundMode);
+    }
   }
 
   async function setThemeByName(name){
@@ -133,50 +142,169 @@
       const resp = await fetch(themePath);
       if(!resp.ok) throw new Error('Theme not found: ' + themePath);
       const json = await resp.json();
-      applyTheme(json);
+      applyTheme(json, name);
+      return json;
     }catch(e){
       console.warn('Failed to load theme', e);
+      return null;
     }
   }
 
-  function setCenterImage(url){
-    const img = el('centerImage');
-    if(!img) return;
-    if(!url){ img.removeAttribute('src'); img.style.display='none'; return; }
-    img.style.display='block'; img.src = url;
+
+
+  function setTitle(text, show){
+    const t = el('centerTitle');
+    if(!t) return;
+
+    // If show is explicitly false, hide the title
+    if(show === false){
+      t.style.display = 'none';
+      return;
+    }
+
+    // Otherwise show/hide based on text content
+    if(!text){
+      t.textContent = '';
+      t.style.display = 'none';
+      return;
+    }
+
+    t.textContent = text;
+    t.style.display = 'block';
   }
 
-  function setTitle(text){ const t = el('centerTitle'); if(t) t.textContent = text || ''; }
+  let apiReachable = false;
+  let usingRandomData = true;
+
+  function setNetStatus(status){
+    const ns = el('netStatus');
+    if(ns) ns.textContent = status;
+  }
+
+  function setAllPanelStatus(status){
+    // Set status for all panels
+    const cpuStatus = document.getElementById('cpu-status');
+    const ramStatus = document.getElementById('ram-status');
+    const diskStatus = document.getElementById('disk-status');
+    const netStatus = document.getElementById('net-status');
+
+    if(cpuStatus) cpuStatus.textContent = status;
+    if(ramStatus) ramStatus.textContent = status;
+    if(diskStatus) diskStatus.textContent = status;
+    if(netStatus) netStatus.textContent = status;
+  }
+
+  // Load config.json and apply settings
+  async function loadConfig(){
+    try{
+      const base = scriptBaseDir();
+      const resp = await fetch(base + '/config.json');
+      if(!resp.ok) throw new Error('config.json not found');
+      const cfg = await resp.json();
+
+      // Apply theme
+      if(cfg.theme){
+        if(typeof cfg.theme === 'string') await setThemeByName(cfg.theme);
+        else applyTheme(cfg.theme);
+      }
+
+      // Apply title (respect showTitle setting, default to false)
+      const showTitle = cfg.showTitle !== undefined ? cfg.showTitle : false;
+      if(showTitle && cfg.title) {
+        setTitle(cfg.title, true);
+      } else {
+        setTitle('', false);
+      }
+
+      // Set API base
+      if(cfg.apiBase) window.API_BASE = cfg.apiBase;
+
+      // Expose config globally for background.js
+      window.WALLPAPER_CONFIG = cfg;
+
+      return cfg;
+    }catch(e){
+      console.warn('Failed to load config.json, using defaults', e);
+      return null;
+    }
+  }
 
   window.WALLPAPER_TEMPLATE = {
-    setCenterImage,
     setTitle,
     setStats,
     fetchStats,
     applyTheme,
-    setThemeName: setThemeByName
+    setThemeName: setThemeByName,
+    loadConfig
   };
 
   // boot
   updateClock(); setInterval(updateClock, 1000);
-  updateSimStats(); setInterval(updateSimStats, 3000);
+
+  // Try to reach API, fall back to randomized if unreachable
+  async function initStats(){
+    if(window.API_BASE){
+      const s = await fetchStats();
+      if(s){
+        apiReachable = true;
+        usingRandomData = false;
+        setAllPanelStatus('ONLINE');
+        setStats({cpu: s.cpu, ram: s.ram, disk: s.disk, network: s.network, latency: 0});
+        return;
+      }
+    }
+    // API not reachable, use randomized
+    apiReachable = false;
+    usingRandomData = true;
+    setAllPanelStatus('RANDOMIZED');
+    updateSimStats();
+  }
+
+  initStats();
 
   setInterval(async()=>{
     if(window.API_BASE){
       const s = await fetchStats();
-      if(s) setStats({cpu: s.cpu, ram: s.ram, disk: s.disk, network: s.network, latency: 0});
+      if(s){
+        if(!apiReachable){
+          apiReachable = true;
+          usingRandomData = false;
+          setAllPanelStatus('ONLINE');
+        }
+        setStats({cpu: s.cpu, ram: s.ram, disk: s.disk, network: s.network, latency: 0});
+      }else{
+        if(apiReachable){
+          apiReachable = false;
+          usingRandomData = true;
+          setAllPanelStatus('RANDOMIZED');
+        }
+        updateSimStats();
+      }
+    }else{
+      if(!usingRandomData){
+        usingRandomData = true;
+        setAllPanelStatus('RANDOMIZED');
+      }
+      updateSimStats();
     }
   }, 5000);
 
-  // auto-apply provided theme config
-  if(window.TEMPLATE_THEME){
-    if(typeof window.TEMPLATE_THEME === 'string') setThemeByName(window.TEMPLATE_THEME);
-    else applyTheme(window.TEMPLATE_THEME);
-  }
-  if(window.TEMPLATE_CONFIG && window.TEMPLATE_CONFIG.theme){
-    const t = window.TEMPLATE_CONFIG.theme;
-    if(typeof t === 'string') setThemeByName(t);
-    else applyTheme(t);
-  }
+  // Load config at boot (async after page load)
+  (async()=>{
+    const cfg = await loadConfig();
+
+    // If config didn't set a theme, fall back to legacy TEMPLATE_THEME/TEMPLATE_CONFIG
+    if(!cfg || !cfg.theme){
+      if(window.TEMPLATE_THEME){
+        if(typeof window.TEMPLATE_THEME === 'string') await setThemeByName(window.TEMPLATE_THEME);
+        else applyTheme(window.TEMPLATE_THEME);
+      }
+      if(window.TEMPLATE_CONFIG && window.TEMPLATE_CONFIG.theme){
+        const t = window.TEMPLATE_CONFIG.theme;
+        if(typeof t === 'string') await setThemeByName(t);
+        else applyTheme(t);
+      }
+    }
+  })();
 
 })();
