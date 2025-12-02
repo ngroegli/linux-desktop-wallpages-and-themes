@@ -1,5 +1,13 @@
-import psutil
+"""
+System metrics utility module.
+
+Provides functions to retrieve system information including OS details,
+CPU usage, RAM usage, disk usage, and network statistics.
+"""
+
 import platform
+
+import psutil
 import distro
 
 
@@ -27,6 +35,7 @@ def get_disk_usage():
 
 
 def get_ram_usage():
+    """Return RAM usage statistics including total, used, available, and percentage."""
     vm = psutil.virtual_memory()
     return {
         'total': vm.total,
@@ -37,6 +46,11 @@ def get_ram_usage():
 
 
 def get_cpu_usage():
+    """
+    Return CPU usage statistics.
+
+    Returns overall CPU percentage, per-core percentages, and CPU core count.
+    """
     # Overall percent (short sample) + per-cpu breakdown
     overall = psutil.cpu_percent(interval=0.5)
     per_cpu = psutil.cpu_percent(interval=0.5, percpu=True)
@@ -48,6 +62,7 @@ def get_cpu_usage():
 
 
 def get_network_usage():
+    """Return network I/O statistics including bytes and packets sent/received."""
     net = psutil.net_io_counters(pernic=False)
     return {
         'bytes_sent': net.bytes_sent,
