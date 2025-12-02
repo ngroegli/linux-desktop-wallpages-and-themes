@@ -30,7 +30,7 @@ The Web Desktop Wallpaper system is a **three-tier client-server application** t
 #### Wallpaper UI
 - **Technology**: HTML5, CSS3, Vanilla JavaScript
 - **Rendering**: Canvas 2D API for animations
-- **Location**: `theme/_base/background.html`
+- **Location**: `theme/base/background.html`
 - **Features**:
   - Live clock and date display
   - System metrics panels (CPU, RAM, Disk, Network)
@@ -197,7 +197,7 @@ sudo systemctl status web-wallpaper-api
 ```
 1. User opens wallpaper (browser or Hidamari)
    ↓
-2. Load theme/_base/background.html
+2. Load theme/base/background.html
    ↓
 3. Execute template.js
    ↓
@@ -255,7 +255,7 @@ User switches theme:
 ```
 web-desktop-wallpapers/
 ├── theme/                          # Theme files
-│   ├── _base/                      # Base templates (underscore for sorting)
+│   ├── base/                       # Base templates
 │   │   ├── background.html         # Main HTML template
 │   │   ├── template.css            # Base styles
 │   │   ├── template.js             # Core logic
@@ -295,12 +295,12 @@ web-desktop-wallpapers/
 
 ```
 ~/WallpagesThemes/                 # Installed by install.sh
-├── _base/                         # Base templates
+├── base/                          # Base templates
 ├── config/                        # Configuration
 ├── themes/                        # All theme implementations
 │   ├── matrix-green-blue/         # Themes (all 12)
 │   └── [other themes]/
-├── _output/                       # Built wallpapers
+├── compiled/                      # Built wallpapers (single-file HTML)
 │   ├── wallpaper-matrix-green-blue.html
 │   └── [other wallpaper files]
 └── build.sh                       # Build script

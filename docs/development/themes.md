@@ -16,7 +16,7 @@ Complete guide to creating and customizing wallpaper themes.
 
 ```
 theme/
-├── _base/                     # Shared wallpaper templates
+├── base/                      # Shared wallpaper templates
 │   ├── background.html        # Main HTML template
 │   ├── template.css           # Base styles
 │   ├── template.js            # Core wallpaper logic
@@ -235,10 +235,10 @@ With background animation:
 ./build.sh
 
 # Test in browser
-xdg-open theme/_base/background.html
+xdg-open theme/base/background.html
 
 # Or with Hidamari
-cp output/wallpaper-my-theme.html ~/WallpagesThemes/
+cp compiled/wallpaper-my-theme.html ~/WallpagesThemes/
 ```
 
 ## Theme Configuration
@@ -380,7 +380,7 @@ Normalized: [1.0, 0.42, 0.21]
 
 1. **Direct browser testing:**
    ```bash
-   cd theme/_base
+   cd theme/base
    python -m http.server 8000
    # Open http://localhost:8000/background.html
    ```

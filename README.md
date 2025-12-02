@@ -49,7 +49,7 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 
 2. **Use the wallpaper:**
    - **Hidamari**: `~/WallpagesThemes/wallpaper-<theme>.html`
-   - **Browser**: `~/WallpagesThemes/_base/background.html`
+   - **Browser**: `~/WallpagesThemes/base/background.html`
 
 3. **Configure** (optional) in `~/WallpagesThemes/config/config.json`:
    ```json
@@ -110,7 +110,7 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 ```
 .
 ├── theme/
-│   ├── _base/             # Base template files (underscore for sorting)
+│   ├── base/              # Base template files
 │   ├── config/            # Configuration files
 │   └── themes/            # All theme implementations
 │       ├── matrix-green-blue/  # 12 animated themes

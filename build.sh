@@ -6,15 +6,15 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_DIR="$(pwd)"
-TARGET_DIR="$SOURCE_DIR/_output"
+TARGET_DIR="$SOURCE_DIR/compiled"
 
-# Create output directory if it doesn't exist
+# Create compiled output directory if it doesn't exist
 mkdir -p "$TARGET_DIR"
 
-if [ ! -d "$SOURCE_DIR/_base" ]; then
-    echo "ERROR: Current directory must contain _base/ folder"
+if [ ! -d "$SOURCE_DIR/base" ]; then
+    echo "ERROR: Current directory must contain base/ folder"
     echo "Current directory: $SOURCE_DIR"
-    echo "Please run this script from a directory containing theme files (_base/, config/, theme folders)"
+    echo "Please run this script from a directory containing theme files (base/, config/, theme folders)"
     exit 1
 fi
 
@@ -62,10 +62,10 @@ build_theme() {
     echo "    Building: wallpaper-${theme_name}.html"
 
     # Read base files
-    local html_file="$SOURCE_DIR/_base/background.html"
-    local css_file="$SOURCE_DIR/_base/template.css"
-    local js_template="$SOURCE_DIR/_base/template.js"
-    local js_bg_manager="$SOURCE_DIR/_base/background-manager.js"
+    local html_file="$SOURCE_DIR/base/background.html"
+    local css_file="$SOURCE_DIR/base/template.css"
+    local js_template="$SOURCE_DIR/base/template.js"
+    local js_bg_manager="$SOURCE_DIR/base/background-manager.js"
 
     # Read theme files
     local theme_json="$SOURCE_DIR/themes/$theme_name/theme.json"
@@ -85,91 +85,30 @@ build_theme() {
         return 1
     fi
 
-    # Start building the output file
-    cat > "$output_file" << 'EOF'
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Wallpaper - EOF
-    echo -n "$theme_name" >> "$output_file"
-    cat >> "$output_file" << 'EOF'
-</title>
-  <style>
-EOF
+    # Start building the output file by reading and modifying the base HTML
+    # Read the HTML and split into head and body sections
+    local html_head=$(sed -n '1,/<\/head>/p' "$html_file")
+    local html_body=$(sed -n '/<body/,/<\/body>/p' "$html_file")
 
-    # Embed CSS
+    # Start output file with HTML structure up to </title>
+    echo "<!doctype html>" > "$output_file"
+    echo "<html lang=\"en\">" >> "$output_file"
+    echo "<head>" >> "$output_file"
+    echo "  <meta charset=\"utf-8\" />" >> "$output_file"
+    echo "  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />" >> "$output_file"
+    echo "  <title>Wallpaper - $theme_name</title>" >> "$output_file"
+
+    # Embed CSS instead of linking
+    echo "  <style>" >> "$output_file"
     cat "$css_file" >> "$output_file"
+    echo "  </style>" >> "$output_file"
+    echo "</head>" >> "$output_file"
 
+    # Add body content (excluding script tags)
+    echo "$html_body" | sed '/<script src=/d' >> "$output_file"
+
+    # Now add embedded scripts
     cat >> "$output_file" << 'EOF'
-  </style>
-</head>
-<body class="template-root">
-
-  <!-- Top-left clock -->
-  <div class="top-clock">
-    <div class="top-clock-time" id="top-clock-time">00:00:00</div>
-    <div class="top-clock-date" id="top-clock-date">LOADING...</div>
-  </div>
-
-  <!-- Right-side info panels -->
-  <div class="right-panel">
-    <div class="panel-section">
-      <div class="panel-title"><span class="status-indicator"></span>SYSTEM</div>
-      <div class="stat-row"><span class="stat-label">STATUS</span><span class="stat-value" id="os-status">ONLINE</span></div>
-      <div class="stat-row"><span class="stat-label">DISTRO</span><span class="stat-value" id="os-distro">Unknown</span></div>
-      <div class="stat-row"><span class="stat-label">VERSION</span><span class="stat-value" id="os-version">N/A</span></div>
-      <div class="stat-row"><span class="stat-label">KERNEL</span><span class="stat-value" id="os-kernel">N/A</span></div>
-      <div class="stat-row"><span class="stat-label">ARCH</span><span class="stat-value" id="os-arch">N/A</span></div>
-    </div>
-
-    <div class="panel-section">
-      <div class="panel-title"><span class="status-indicator"></span>CPU</div>
-      <div class="stat-row"><span class="stat-label">STATUS</span><span class="stat-value" id="cpu-status">ONLINE</span></div>
-      <div class="stat-row"><span class="stat-label">USAGE</span><span class="stat-value" id="cpu-value">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="cpu-bar" style="width:0%"></div></div>
-      <div class="stat-row"><span class="stat-label">CORES</span><span class="stat-value" id="cpu-cores">0</span></div>
-      <div class="stat-row"><span class="stat-label">FREQ</span><span class="stat-value" id="cpu-freq">0 MHz</span></div>
-    </div>
-
-    <div class="panel-section">
-      <div class="panel-title"><span class="status-indicator"></span>RAM</div>
-      <div class="stat-row"><span class="stat-label">STATUS</span><span class="stat-value" id="ram-status">ONLINE</span></div>
-      <div class="stat-row"><span class="stat-label">USAGE</span><span class="stat-value" id="ram-value">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="ram-bar" style="width:0%"></div></div>
-      <div class="stat-row"><span class="stat-label">TOTAL</span><span class="stat-value" id="ram-total">0 GB</span></div>
-      <div class="stat-row"><span class="stat-label">USED</span><span class="stat-value" id="ram-used">0 GB</span></div>
-    </div>
-
-    <div class="panel-section">
-      <div class="panel-title"><span class="status-indicator"></span>DISK</div>
-      <div class="stat-row"><span class="stat-label">STATUS</span><span class="stat-value" id="disk-status">ONLINE</span></div>
-      <div class="stat-row"><span class="stat-label">USAGE</span><span class="stat-value" id="disk-percent">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="disk-bar" style="width:0%"></div></div>
-      <div class="stat-row"><span class="stat-label">TOTAL</span><span class="stat-value" id="disk-total">0 GB</span></div>
-      <div class="stat-row"><span class="stat-label">FREE</span><span class="stat-value" id="disk-free">0 GB</span></div>
-    </div>
-
-    <div class="panel-section">
-      <div class="panel-title"><span class="status-indicator"></span>NETWORK</div>
-      <div class="stat-row"><span class="stat-label">STATUS</span><span class="stat-value" id="net-status">ONLINE</span></div>
-      <div class="stat-row"><span class="stat-label">LATENCY</span><span class="stat-value" id="latency-value">0ms</span></div>
-      <div class="stat-row"><span class="stat-label">SENT</span><span class="stat-value" id="net-sent">0 B</span></div>
-      <div class="stat-row"><span class="stat-label">RECV</span><span class="stat-value" id="net-recv">0 B</span></div>
-    </div>
-  </div>
-
-  <!-- Center title -->
-  <main class="center-stage" id="center-stage">
-    <h1 class="center-title" id="center-title" style="display:none;"></h1>
-  </main>
-
-  <div class="decor-overlay" aria-hidden="true"></div>
-
-  <!-- Background layer: canvas for animated backgrounds -->
-  <canvas id="background-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:0;"></canvas>
-
   <script>
 // Embedded configuration
 const EMBEDDED_CONFIG =
