@@ -4,10 +4,24 @@ The Flask API provides real-time system metrics for the wallpaper frontend.
 
 ## Overview
 
-- Built with Flask and `psutil`
+- Built with Flask, Flask-RESTX, and `psutil`
 - Runs as a systemd service on port 5000
 - CORS-enabled for browser access
 - Graceful fallback when API is unavailable
+- **Interactive Swagger UI documentation at `/api`**
+
+## Interactive API Documentation
+
+The API includes full OpenAPI/Swagger documentation with an interactive testing interface:
+
+**URL:** http://localhost:5000/api
+
+The Swagger UI allows you to:
+- Browse all available endpoints
+- See request/response schemas
+- Test endpoints directly in the browser
+- View example responses
+- Download the OpenAPI specification
 
 ## API Endpoints
 
@@ -41,6 +55,14 @@ The Flask API provides real-time system metrics for the wallpaper frontend.
     "bytes_recv": 987654321,
     "packets_sent": 456789,
     "packets_recv": 789123
+  },
+  "os": {
+    "system": "Linux",
+    "distro": "Ubuntu",
+    "version": "24.04",
+    "codename": "noble",
+    "kernel": "6.14.0-36-generic",
+    "architecture": "x86_64"
   }
 }
 ```
@@ -95,6 +117,21 @@ Returns network I/O counters.
   "bytes_recv": 987654321,
   "packets_sent": 456789,
   "packets_recv": 789123
+}
+```
+
+#### `GET /api/os`
+Returns operating system information.
+
+**Response:**
+```json
+{
+  "system": "Linux",
+  "distro": "Ubuntu",
+  "version": "24.04",
+  "codename": "noble",
+  "kernel": "6.14.0-36-generic",
+  "architecture": "x86_64"
 }
 ```
 

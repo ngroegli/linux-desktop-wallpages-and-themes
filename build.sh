@@ -31,10 +31,16 @@ fi
 
 # Get list of theme directories
 THEMES=()
-for theme_dir in "$SOURCE_DIR"/*/ ; do
+THEMES_SOURCE_DIR="$SOURCE_DIR/themes"
+if [ ! -d "$THEMES_SOURCE_DIR" ]; then
+    echo "ERROR: themes/ directory not found"
+    exit 1
+fi
+
+for theme_dir in "$THEMES_SOURCE_DIR"/*/ ; do
     if [ -d "$theme_dir" ]; then
         theme_name=$(basename "$theme_dir")
-        if [ "$theme_name" != "_base" ] && [ "$theme_name" != "config" ] && [ -f "$theme_dir/theme.json" ]; then
+        if [ -f "$theme_dir/theme.json" ]; then
             THEMES+=("$theme_name")
         fi
     fi
@@ -62,10 +68,10 @@ build_theme() {
     local js_bg_manager="$SOURCE_DIR/_base/background-manager.js"
 
     # Read theme files
-    local theme_json="$SOURCE_DIR/$theme_name/theme.json"
+    local theme_json="$SOURCE_DIR/themes/$theme_name/theme.json"
     local theme_bg_js=""
-    if [ -f "$SOURCE_DIR/$theme_name/background.js" ]; then
-        theme_bg_js="$SOURCE_DIR/$theme_name/background.js"
+    if [ -f "$SOURCE_DIR/themes/$theme_name/background.js" ]; then
+        theme_bg_js="$SOURCE_DIR/themes/$theme_name/background.js"
     fi
 
     # Check if all required files exist
@@ -109,6 +115,15 @@ EOF
 
   <!-- Right-side info panels -->
   <div class="right-panel">
+    <div class="panel-section">
+      <div class="panel-title"><span class="status-indicator"></span>SYSTEM</div>
+      <div class="stat-row"><span class="stat-label">STATUS</span><span class="stat-value" id="os-status">ONLINE</span></div>
+      <div class="stat-row"><span class="stat-label">DISTRO</span><span class="stat-value" id="os-distro">Unknown</span></div>
+      <div class="stat-row"><span class="stat-label">VERSION</span><span class="stat-value" id="os-version">N/A</span></div>
+      <div class="stat-row"><span class="stat-label">KERNEL</span><span class="stat-value" id="os-kernel">N/A</span></div>
+      <div class="stat-row"><span class="stat-label">ARCH</span><span class="stat-value" id="os-arch">N/A</span></div>
+    </div>
+
     <div class="panel-section">
       <div class="panel-title"><span class="status-indicator"></span>CPU</div>
       <div class="stat-row"><span class="stat-label">STATUS</span><span class="stat-value" id="cpu-status">ONLINE</span></div>

@@ -24,7 +24,7 @@
 
     try {
       const base = scriptBaseDir();
-      const scriptPath = base + '/../' + encodeURIComponent(themeName) + '/background.js';
+      const scriptPath = base + '/../themes/' + encodeURIComponent(themeName) + '/background.js';
 
       // Clean up old script
       if(currentBackgroundScript){

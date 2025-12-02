@@ -48,11 +48,12 @@
       ram: { percent: ram, total: ramTotal, used: ramUsed },
       disk: { percent: 60, total: diskTotal, free: diskFree },
       network: { bytes_sent: 0, bytes_recv: 0 },
+      os: { distro: 'Unknown', version: 'N/A', kernel: 'N/A', architecture: 'N/A' },
       latency
     });
   }
 
-  function setStats({cpu, ram, disk, network, latency}){
+  function setStats({cpu, ram, disk, network, os, latency}){
     if(cpu){
       const pct = cpu.percent ?? cpu;
       const cEl = el('cpuValue'); if(cEl) cEl.textContent = `${Number(pct).toFixed(1)}%`;
@@ -80,6 +81,13 @@
     if(network){
       const ns = document.getElementById('net-sent'); if(ns && network.bytes_sent != null) ns.textContent = formatBytes(network.bytes_sent);
       const nr = document.getElementById('net-recv'); if(nr && network.bytes_recv != null) nr.textContent = formatBytes(network.bytes_recv);
+    }
+
+    if(os){
+      const osDistro = document.getElementById('os-distro'); if(osDistro && os.distro) osDistro.textContent = os.distro;
+      const osVersion = document.getElementById('os-version'); if(osVersion && os.version) osVersion.textContent = os.version;
+      const osKernel = document.getElementById('os-kernel'); if(osKernel && os.kernel) osKernel.textContent = os.kernel;
+      const osArch = document.getElementById('os-arch'); if(osArch && os.architecture) osArch.textContent = os.architecture;
     }
 
     const latEl = el('latency'); if(latEl && latency != null) latEl.textContent = `${latency}ms`;
@@ -137,8 +145,8 @@
     if(!name) return;
     try{
       const base = scriptBaseDir();
-      // theme folders are sibling to base, e.g. base/ -> ../<name>/theme.json
-      const themePath = base + '/../' + encodeURIComponent(name) + '/theme.json';
+      // theme folders are in themes/ subdirectory, e.g. base/ -> ../themes/<name>/theme.json
+      const themePath = base + '/../themes/' + encodeURIComponent(name) + '/theme.json';
       const resp = await fetch(themePath);
       if(!resp.ok) throw new Error('Theme not found: ' + themePath);
       const json = await resp.json();
@@ -187,18 +195,20 @@
     const ramStatus = document.getElementById('ram-status');
     const diskStatus = document.getElementById('disk-status');
     const netStatus = document.getElementById('net-status');
+    const osStatus = document.getElementById('os-status');
 
     if(cpuStatus) cpuStatus.textContent = status;
     if(ramStatus) ramStatus.textContent = status;
     if(diskStatus) diskStatus.textContent = status;
     if(netStatus) netStatus.textContent = status;
+    if(osStatus) osStatus.textContent = status;
   }
 
   // Load config.json and apply settings
   async function loadConfig(){
     try{
       const base = scriptBaseDir();
-      const resp = await fetch(base + '/config.json');
+      const resp = await fetch(base + '/../config/config.json');
       if(!resp.ok) throw new Error('config.json not found');
       const cfg = await resp.json();
 
@@ -249,7 +259,7 @@
         apiReachable = true;
         usingRandomData = false;
         setAllPanelStatus('ONLINE');
-        setStats({cpu: s.cpu, ram: s.ram, disk: s.disk, network: s.network, latency: 0});
+        setStats({cpu: s.cpu, ram: s.ram, disk: s.disk, network: s.network, os: s.os, latency: 0});
         return;
       }
     }
@@ -271,7 +281,7 @@
           usingRandomData = false;
           setAllPanelStatus('ONLINE');
         }
-        setStats({cpu: s.cpu, ram: s.ram, disk: s.disk, network: s.network, latency: 0});
+        setStats({cpu: s.cpu, ram: s.ram, disk: s.disk, network: s.network, os: s.os, latency: 0});
       }else{
         if(apiReachable){
           apiReachable = false;

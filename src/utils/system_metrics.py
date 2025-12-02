@@ -1,4 +1,18 @@
 import psutil
+import platform
+import distro
+
+
+def get_os_info():
+    """Return operating system information."""
+    return {
+        'system': platform.system(),
+        'distro': distro.name(),
+        'version': distro.version(),
+        'codename': distro.codename(),
+        'kernel': platform.release(),
+        'architecture': platform.machine(),
+    }
 
 
 def get_disk_usage():

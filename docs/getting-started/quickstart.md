@@ -134,10 +134,10 @@ WALLPAPER_TEMPLATE.applyTheme({
 ## File Locations
 
 **Installed (after running install.sh):**
-- **Hidamari wallpapers**: `~/WallpagesThemes/wallpaper-*.html`
-- **Browser wallpaper**: `~/WallpagesThemes/base/background.html`
-- **Config**: `~/WallpagesThemes/base/config.json`
-- **Themes**: `~/WallpagesThemes/matrix-green-blue/`, etc.
+- **Hidamari wallpapers**: `~/WallpagesThemes/_output/wallpaper-*.html`
+- **Browser wallpaper**: `~/WallpagesThemes/_base/background.html`
+- **Config**: `~/WallpagesThemes/config/config.json`
+- **Themes**: `~/WallpagesThemes/themes/matrix-green-blue/`, etc.
 - **Service File**: `/etc/systemd/system/web-wallpaper-api.service`
 - **Logs**: `sudo journalctl -u web-wallpaper-api`
 

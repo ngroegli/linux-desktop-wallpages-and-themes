@@ -112,10 +112,11 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 ├── theme/
 │   ├── _base/             # Base template files (underscore for sorting)
 │   ├── config/            # Configuration files
-│   ├── matrix-green-blue/ # 12 animated themes
-│   ├── ice-blue/          # Each with theme.json + background.js
-│   ├── ubuntu/            # + openbar-theme-config for shell colors
-│   └── [9 more themes]/
+│   └── themes/            # All theme implementations
+│       ├── matrix-green-blue/  # 12 animated themes
+│       ├── ice-blue/           # Each with theme.json + background.js
+│       ├── ubuntu/             # + openbar-theme-config for shell colors
+│       └── [9 more themes]/
 ├── src/                   # Flask API backend
 │   ├── app.py
 │   └── utils/
@@ -148,12 +149,17 @@ docker compose up --build
 
 ## API Endpoints
 
+**Interactive API Documentation (Swagger UI):** http://localhost:5000/api
+
 - `GET /api/stats` - **All system stats in one call** (recommended)
 - `GET /api/health` - Health check
 - `GET /api/cpu` - CPU usage and core count
 - `GET /api/ram` - RAM usage and totals
 - `GET /api/disk` - Disk usage and space
 - `GET /api/network` - Network I/O statistics
+- `GET /api/os` - Operating system information (distro, version, kernel)
+
+The API includes full OpenAPI/Swagger documentation with an interactive UI for testing endpoints.
 
 ## License
 

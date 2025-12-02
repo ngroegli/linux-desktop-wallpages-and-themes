@@ -264,12 +264,13 @@ web-desktop-wallpapers/
 │   ├── config/                     # Configuration
 │   │   └── config.json             # Global settings
 │   │
-│   ├── matrix-green-blue/          # Example theme
-│   │   ├── theme.json              # Theme colors & mode
-│   │   ├── background.js           # Custom animation
-│   │   └── openbar-theme-config    # Shell colors
-│   │
-│   └── [11 other themes]/          # Additional themes
+│   └── themes/                     # All theme implementations
+│       ├── matrix-green-blue/      # Example theme
+│       │   ├── theme.json          # Theme colors & mode
+│       │   ├── background.js       # Custom animation
+│       │   └── openbar-theme-config  # Shell colors
+│       │
+│       └── [11 other themes]/      # Additional themes
 │
 ├── src/                            # Backend API
 │   ├── app.py                      # Flask application
@@ -296,10 +297,12 @@ web-desktop-wallpapers/
 ~/WallpagesThemes/                 # Installed by install.sh
 ├── _base/                         # Base templates
 ├── config/                        # Configuration
-├── matrix-green-blue/             # Themes (all 12)
-├── [other themes]/
-├── wallpaper-matrix-green-blue.html  # Single files
-├── [other wallpaper files]
+├── themes/                        # All theme implementations
+│   ├── matrix-green-blue/         # Themes (all 12)
+│   └── [other themes]/
+├── _output/                       # Built wallpapers
+│   ├── wallpaper-matrix-green-blue.html
+│   └── [other wallpaper files]
 └── build.sh                       # Build script
 ```
 
