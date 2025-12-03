@@ -71,7 +71,7 @@ docs/
 7. **ascii-galaxy** - ASCII art space theme
 8. **circuit-board** - Animated circuit paths
 9. **quantum-tunnel** - Quantum portal rings
-10. **cyber-fortress** - Hexagonal defense shields
+10. **cyber-grid** - Hexagonal defense shields
 11. **threat-map** - Global threat intelligence
 12. **soc-blueprint** - SOC dashboard metrics
 

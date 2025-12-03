@@ -1,0 +1,10 @@
+{
+  "--bg-primary": "#0a0a0f",
+  "--bg-panel": "rgba(42, 45, 53, 0.92)",
+  "--accent-1": "#00d9ff",
+  "--accent-2": "#ff0044",
+  "--muted": "rgba(0, 217, 255, 0.15)",
+  "--panel-shadow": "rgba(0, 217, 255, 0.4)",
+  "--title-shadow": "rgba(0, 217, 255, 0.6)",
+  "backgroundMode": "grid"
+}

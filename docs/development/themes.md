@@ -97,7 +97,7 @@ Each theme folder must contain:
 - Background: Rotating quantum rings
 - Style: Sci-fi, dimensional portal
 
-### 10. cyber-fortress
+### 10. cyber-grid
 **Cyber Defense Theme**
 - Colors: Bright blue (#0099ff)
 - Background: Hexagonal shields and data particles
