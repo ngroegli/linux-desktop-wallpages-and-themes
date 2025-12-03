@@ -1,0 +1,259 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.2.3, or leave empty for auto-increment)'
+        required: false
+        type: string
+      release_type:
+        description: 'Type of release'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            # Triggered by tag push
+            VERSION="${GITHUB_REF#refs/tags/}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "📌 Using pushed tag: $VERSION"
+          elif [[ -n "${{ github.event.inputs.version }}" ]]; then
+            # Manual version specified
+            VERSION="${{ github.event.inputs.version }}"
+            if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              VERSION="v${VERSION}"
+            fi
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "📌 Using manual version: $VERSION"
+          else
+            # Auto-increment based on release type
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+            echo "Latest tag: $LATEST_TAG"
+
+            # Extract major, minor, patch
+            VERSION_NUM="${LATEST_TAG#v}"
+            MAJOR=$(echo $VERSION_NUM | cut -d. -f1)
+            MINOR=$(echo $VERSION_NUM | cut -d. -f2)
+            PATCH=$(echo $VERSION_NUM | cut -d. -f3)
+
+            case "${{ github.event.inputs.release_type }}" in
+              major)
+                MAJOR=$((MAJOR + 1))
+                MINOR=0
+                PATCH=0
+                ;;
+              minor)
+                MINOR=$((MINOR + 1))
+                PATCH=0
+                ;;
+              patch)
+                PATCH=$((PATCH + 1))
+                ;;
+            esac
+
+            VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "📌 Auto-incremented version: $VERSION"
+          fi
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "⚠️  Tag $VERSION already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "✅ Tag $VERSION is available"
+          fi
+
+      - name: Build wallpapers
+        run: |
+          echo "🔨 Building wallpapers..."
+          chmod +x build.sh
+          cd theme
+          bash ../build.sh
+
+      - name: Verify build
+        run: |
+          if [ ! -d theme/compiled ]; then
+            echo "❌ Build failed: compiled directory not found"
+            exit 1
+          fi
+
+          file_count=$(find theme/compiled -name "*.html" -type f | wc -l)
+          echo "✅ Built $file_count wallpaper files"
+
+          if [ $file_count -eq 0 ]; then
+            echo "❌ Build failed: no files compiled"
+            exit 1
+          fi
+
+      - name: Create release archive
+        id: archive
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ARCHIVE_NAME="wallpapers-${VERSION}.tar.gz"
+
+          echo "📦 Creating release archive: $ARCHIVE_NAME"
+          tar -czf "$ARCHIVE_NAME" \
+            theme/compiled/ \
+            theme/config/ \
+            README.md \
+            LICENSE \
+            install.sh \
+            requirements.txt
+
+          echo "archive_name=$ARCHIVE_NAME" >> $GITHUB_OUTPUT
+          ls -lh "$ARCHIVE_NAME"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+
+          echo "## 🎨 Wallpapers & Themes Release $VERSION" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+
+          if [ -n "$PREV_TAG" ]; then
+            echo "### Changes since $PREV_TAG" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+
+            # Get commit messages
+            git log $PREV_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+
+            # Statistics
+            COMMITS=$(git rev-list $PREV_TAG..HEAD --count)
+            echo "### 📊 Statistics" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "- **Commits**: $COMMITS" >> CHANGELOG.md
+          else
+            echo "### Initial Release" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "First release of the Linux Desktop Wallpapers & Themes project." >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          # List included themes
+          echo "### 🎭 Included Themes" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          find theme/ -name "theme.json" -type f | while read theme_file; do
+            theme_dir=$(dirname "$theme_file")
+            theme_name=$(basename "$theme_dir")
+            if [ -f "$theme_dir/theme.json" ]; then
+              echo "- \`$theme_name\`" >> CHANGELOG.md
+            fi
+          done
+
+          echo "" >> CHANGELOG.md
+          echo "### 📥 Installation" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo '```bash' >> CHANGELOG.md
+          echo "# Download and extract" >> CHANGELOG.md
+          echo "tar -xzf wallpapers-${VERSION}.tar.gz" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "# Run installation script" >> CHANGELOG.md
+          echo "chmod +x install.sh" >> CHANGELOG.md
+          echo "./install.sh" >> CHANGELOG.md
+          echo '```' >> CHANGELOG.md
+
+          # Output for GitHub
+          cat CHANGELOG.md
+          echo "changelog_file=CHANGELOG.md" >> $GITHUB_ENV
+
+      - name: Create Git tag
+        if: steps.check_tag.outputs.exists == 'false' && github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          echo "🏷️  Creating tag: $VERSION"
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin "$VERSION"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: ${{ github.event.inputs.prerelease || false }}
+          files: |
+            ${{ steps.archive.outputs.archive_name }}
+            theme/compiled/*.html
+            README.md
+            LICENSE
+          generate_release_notes: true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ steps.version.outputs.version }}
+          path: |
+            ${{ steps.archive.outputs.archive_name }}
+            theme/compiled/
+            CHANGELOG.md
+          retention-days: 90
+
+      - name: Release summary
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ARCHIVE_NAME="${{ steps.archive.outputs.archive_name }}"
+          echo "## 🚀 Release Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: $VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "**Archive**: $ARCHIVE_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "**Pre-release**: ${{ github.event.inputs.prerelease || false }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Release Assets" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Complete archive with all themes" >> $GITHUB_STEP_SUMMARY
+          echo "- Individual compiled HTML wallpapers" >> $GITHUB_STEP_SUMMARY
+          echo "- Documentation (README.md, LICENSE)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Links" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- [View Release](https://github.com/${{ github.repository }}/releases/tag/$VERSION)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Download Archive](https://github.com/${{ github.repository }}/releases/download/$VERSION/$ARCHIVE_NAME)" >> $GITHUB_STEP_SUMMARY
