@@ -49,9 +49,16 @@
           break;
       }
 
-      // Drift velocity
-      this.vx = (Math.random() - 0.5) * 0.1 * this.z;
-      this.vy = (Math.random() - 0.5) * 0.1 * this.z;
+      // Drift velocity - MUCH faster movement
+      const speedMultiplier = this.type === 'dust' ? 6.0 :
+                             this.type === 'star' ? 3.0 :
+                             this.type === 'nebula' ? 2.0 : 1.5;
+      this.vx = (Math.random() - 0.5) * 2.5 * (1 - this.z * 0.3) * speedMultiplier;
+      this.vy = (Math.random() - 0.5) * 2.5 * (1 - this.z * 0.3) * speedMultiplier;
+
+      // Faster rotation for visual interest
+      this.rotation = Math.random() * Math.PI * 2;
+      this.rotationSpeed = (Math.random() - 0.5) * 0.08;
     }
 
     update(time, canvas) {
@@ -60,14 +67,21 @@
 
       // Orbital motion for planets
       if (this.type === 'planet') {
-        this.orbitAngle += this.orbitSpeed * 0.01;
+        this.orbitAngle += this.orbitSpeed * 0.08; // Much faster orbit
         this.x = this.orbitCenter.x + Math.cos(this.orbitAngle) * this.orbitRadius * this.z;
         this.y = this.orbitCenter.y + Math.sin(this.orbitAngle) * this.orbitRadius * this.z * 0.5;
       } else {
-        // Slow drift
+        // Dynamic drift with some variation
         this.x += this.vx;
         this.y += this.vy;
+
+        // Add stronger wave motion for more organic feel
+        this.x += Math.sin(time * 0.002 + this.twinkleOffset) * 1.2;
+        this.y += Math.cos(time * 0.0015 + this.twinkleOffset) * 0.8;
       }
+
+      // Rotate characters
+      this.rotation += this.rotationSpeed;
 
       // Wrap around screen
       if (this.x < -50) this.x = canvas.width + 50;
@@ -96,6 +110,12 @@
           break;
       }
 
+      ctx.save();
+
+      // Apply rotation transform
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+
       ctx.fillStyle = color;
       ctx.font = `${size}px monospace`;
       ctx.textAlign = 'center';
@@ -107,8 +127,10 @@
         ctx.shadowColor = color;
       }
 
-      ctx.fillText(this.char, this.x, this.y);
+      ctx.fillText(this.char, 0, 0);
       ctx.shadowBlur = 0;
+
+      ctx.restore();
     }
   }
 
