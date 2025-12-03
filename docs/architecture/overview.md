@@ -16,7 +16,7 @@ Complete technical architecture of the Web Desktop Wallpaper system.
 The Web Desktop Wallpaper system is a **three-tier client-server application** that displays live system metrics on customizable web-based wallpapers.
 
 **Key Features:**
-- Real-time system monitoring (CPU, RAM, Disk, Network)
+- Real-time system monitoring (OS, CPU, RAM, Disk, Network)
 - 12 animated wallpaper themes
 - Flask REST API backend
 - Graceful fallback when API unavailable
@@ -33,7 +33,7 @@ The Web Desktop Wallpaper system is a **three-tier client-server application** t
 - **Location**: `theme/base/background.html`
 - **Features**:
   - Live clock and date display
-  - System metrics panels (CPU, RAM, Disk, Network)
+  - System metrics panels (SYSTEM/OS, CPU, RAM, Disk, Network)
   - Theme-specific background animations
   - Configurable center title/image
   - Automatic fallback to randomized data
@@ -69,10 +69,11 @@ WALLPAPER_BACKGROUND.stopBackground()
 ### 2. Application Layer (Backend)
 
 #### Flask REST API
-- **Technology**: Python 3, Flask, Flask-CORS
+- **Technology**: Python 3, Flask, Flask-RESTX, Flask-CORS
 - **Port**: 5000 (default)
 - **Deployment**: systemd service
 - **Location**: `src/app.py`
+- **Documentation**: Interactive Swagger UI at `/api`
 
 **Endpoints:**
 - `GET /api/stats` - All metrics in one call (recommended)
@@ -80,11 +81,13 @@ WALLPAPER_BACKGROUND.stopBackground()
 - `GET /api/ram` - RAM usage and totals
 - `GET /api/disk` - Disk usage and space
 - `GET /api/network` - Network I/O statistics
+- `GET /api/os` - Operating system information (distro, kernel, architecture)
 - `GET /api/health` - Health check
 
 **Features:**
+- OpenAPI/Swagger documentation with interactive UI
 - CORS enabled for browser access
-- Efficient metric collection via psutil
+- Efficient metric collection via psutil and distro libraries
 - JSON responses with numeric values
 - Systemd integration for auto-start
 
@@ -230,24 +233,6 @@ Every 5 seconds:
     - Set status to "ONLINE"
    ↓
 3. Schedule next poll in 5 seconds
-```
-
-### Theme Switching
-
-```
-User switches theme:
-  ↓
-1. Stop current background animation
-   ↓
-2. Load new theme/{name}/theme.json
-   ↓
-3. Apply new CSS variables
-   ↓
-4. If new backgroundMode:
-   - Load new background.js
-   - Start new animation
-   ↓
-5. Update UI with new colors
 ```
 
 ## Directory Structure

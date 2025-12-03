@@ -1,78 +1,48 @@
-# Documentation# Documentation
+# Documentation
 
+Complete documentation for the Linux Desktop Wallpages and Themes system.
 
+## Quick Navigation
 
-Complete documentation for the Web Desktop Wallpaper system.This folder holds comprehensive project documentation.
+### 🚀 Getting Started
 
-
-
-## Quick Navigation## Quick Reference
-
-
-
-### 🚀 Getting Started- **[QUICKSTART.md](QUICKSTART.md)** - Fast setup and usage reference for new users
-
-New to the project? Start here:- **[SOFTWARE_ARCHITECTURE.md](SOFTWARE_ARCHITECTURE.md)** - Complete software architecture documentation with diagrams
+New to the project? Start here:
 
 - **[Quickstart Guide](getting-started/quickstart.md)** - 5-minute setup
-
-- **[Installation Guide](getting-started/installation.md)** - Detailed installation and systemd setup## Setup & Installation
-
+- **[Installation Guide](getting-started/installation.md)** - Detailed installation and systemd setup
 - **[Usage Guide](getting-started/usage.md)** - Basic usage and configuration
 
-- **[INSTALLATION.md](INSTALLATION.md)** - Service setup and systemd configuration
-
-### 🏗️ Architecture- **[HIDAMARI.md](HIDAMARI.md)** - Notes for using Hidamari wallpaper engine
+### 🏗️ Architecture
 
 Understand how the system works:
 
-- **[System Architecture](architecture/overview.md)** - Complete technical architecture## Theming & Customization
-
+- **[System Architecture](architecture/overview.md)** - Complete technical architecture
 - **[Architecture Diagrams](architecture/diagrams/)** - Visual system diagrams (D2 format)
 
-- **[THEME_STRUCTURE.md](THEME_STRUCTURE.md)** - Theme folder organization and required files
-
-### 💻 Development- **[THEME_TEMPLATE.md](THEME_TEMPLATE.md)** - Creating and customizing themes
+### 💻 Development
 
 Contributing or customizing:
 
-- **[Flask API Reference](development/api.md)** - REST API documentation## Technical Reference
-
+- **[Flask API Reference](development/api.md)** - REST API endpoints with Swagger documentation
 - **[Theme Development Guide](development/themes.md)** - Creating and customizing themes
+- **[Hidamari Integration](development/hidamari.md)** - Wallpaper engine integration
 
-- **[Hidamari Integration](development/hidamari.md)** - Wallpaper engine integration- **[FLASK_API.md](FLASK_API.md)** - REST API endpoints and examples
-
-- **[FLASK_API_NOTES.md](FLASK_API_NOTES.md)** - Additional API implementation notes
-
-## Documentation Structure- **[ARCHITECTURE.md](ARCHITECTURE.md)** - High-level project structure
-
-- **[USAGE.md](USAGE.md)** - How to run locally and with Docker
+## Documentation Structure
 
 ```
-
-docs/## Diagrams
-
+docs/
 ├── README.md                      # This file
-
-│- **[drawings/](drawings/)** - D2 architecture diagrams and PNG exports
-
-├── getting-started/               # User guides  - `system-architecture.d2/.png` - Complete system overview
-
-│   ├── quickstart.md              # Quick setup  - `communication-flow.d2/.png` - Frontend-backend communication
-
-│   ├── installation.md            # Full installation  - `convert.sh` - Script to convert D2 to PNG
-
-│   └── usage.md                   # Usage instructions  - See [drawings/README.md](drawings/README.md) for details
-
+├── getting-started/               # User guides
+│   ├── quickstart.md              # Quick setup
+│   ├── installation.md            # Full installation
+│   └── usage.md                   # Usage instructions
 │
-
 ├── architecture/                  # System design
 │   ├── overview.md                # Complete architecture
 │   └── diagrams/                  # Visual diagrams
 │       ├── system-architecture.*  # Component overview
 │       ├── communication-flow.*   # Data flow
-│       ├── convert.sh             # Diagram generator
-│       └── README.md              # Diagram docs
+│       └── convert.sh             # Diagram generator
 │
 └── development/                   # Developer docs
     ├── api.md                     # API reference
@@ -156,7 +126,7 @@ sudo journalctl -u web-wallpaper-api -f
 # Build single-file wallpapers
 ./build.sh
 
-# Output: ./output/wallpaper-<theme>.html for each theme
+# Output: theme/compiled/wallpaper-<theme>.html for each theme
 ```
 
 ## Learning Path

@@ -231,14 +231,14 @@ With background animation:
 ### Step 4: Build and Test
 
 ```bash
-# Build single-file wallpaper (outputs to ./output/)
-./build.sh
+# Build single-file wallpapers (outputs to theme/compiled/)
+cd theme && bash ../build.sh
 
 # Test in browser
 xdg-open theme/base/background.html
 
-# Or with Hidamari
-cp compiled/wallpaper-my-theme.html ~/WallpagesThemes/
+# Or with Hidamari - copy compiled wallpaper
+cp theme/compiled/wallpaper-my-theme.html ~/WallpagesThemes/
 ```
 
 ## Theme Configuration
@@ -396,8 +396,8 @@ Normalized: [1.0, 0.42, 0.21]
 
 3. **Build and test single file:**
    ```bash
-   ./build.sh
-   xdg-open output/wallpaper-my-theme.html
+   cd theme && bash ../build.sh
+   xdg-open compiled/wallpaper-my-theme.html
    ```
 
 ### Integration Testing

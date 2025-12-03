@@ -15,16 +15,16 @@ curl http://localhost:5000/api/health
 
 ## Configuration
 
-Edit `theme/base/config.json`:
+Edit `theme/config/config.json` (or after install: `~/WallpagesThemes/config/config.json`):
 
 ```json
 {
-  "theme": "ubuntu",             // Theme: matrix-green-blue, ice-blue, ubuntu, clair-obscur
-  "image": "",                   // Center image path (empty = no image)
-  "showImage": false,            // Show/hide image placeholder (default: false)
-  "title": "Your Title Here",    // Center title text
-  "showTitle": false,            // Show/hide title text (default: false)
-  "apiBase": "http://localhost:5000"  // Flask API URL
+  "theme": "ubuntu",
+  "image": "",
+  "showImage": false,
+  "title": "Your Title Here",
+  "showTitle": false,
+  "apiBase": "http://localhost:5000"
 }
 ```
 
@@ -70,10 +70,10 @@ sudo systemctl disable web-wallpaper-api
 After making changes, rebuild the single-file wallpapers for Hidamari:
 
 ```bash
-# Build all themes (output to ./output directory)
-./build.sh
+# Build all themes (output to theme/compiled/ directory)
+cd theme && bash ../build.sh
 
-# Or run the installer (rebuilds automatically to ~/WallpagesThemes)
+# Or run the installer (rebuilds automatically to ~/WallpagesThemes/)
 sudo ./install.sh
 ```
 
