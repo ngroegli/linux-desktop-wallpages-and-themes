@@ -1,5 +1,5 @@
 [/]
-accent-color=['0.0', '1.0', '0.8']
+accent-color=['0.08', '0.83', '1.0']
 accent-override=false
 apply-accent-shell=true
 apply-all-shell=true
@@ -70,7 +70,7 @@ count7=30276
 count8=15352
 count9=6638
 cust-margin-wmax=false
-dark-accent-color=['0.0', '1.0', '0.8']
+dark-accent-color=['0.08', '0.83', '1.0']
 dark-bcolor=['0.055', '0.055', '0.016']
 dark-bgcolor=['0.012', '0.012', '0.012']
 dark-bgcolor-wmax=['0.027', '0.063', '0.094']
@@ -150,7 +150,7 @@ hscd-color=['0.471', '0.471', '0.471']
 import-export=true
 isalpha=0.94999999999999996
 iscolor=['0.012', '0.012', '0.012']
-light-accent-color=['0.0', '1.0', '0.8']
+light-accent-color=['0.08', '0.83', '1.0']
 light-bcolor=['0.318', '0.055', '0.204']
 light-bgcolor=['0.914', '0.784', '0.839']
 light-bgcolor-wmax=['0.922', '0.922', '0.922']

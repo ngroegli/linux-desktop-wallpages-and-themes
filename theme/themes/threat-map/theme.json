@@ -1,10 +1,10 @@
 {
-  "--bg-primary": "#0a0a12",
-  "--bg-panel": "rgba(20, 20, 30, 0.85)",
-  "--accent-1": "#ff3333",
-  "--accent-2": "#00ff88",
-  "--muted": "rgba(255, 51, 51, 0.15)",
-  "--panel-shadow": "rgba(255, 51, 51, 0.4)",
-  "--title-shadow": "rgba(0, 255, 136, 0.6)",
-  "backgroundMode": "threatmap"
+  "--bg-primary": "#0a0d14",
+  "--bg-panel": "rgba(15, 20, 25, 0.85)",
+  "--accent-1": "#ff0033",
+  "--accent-2": "#00ff41",
+  "--muted": "rgba(0, 255, 65, 0.15)",
+  "--panel-shadow": "rgba(255, 0, 51, 0.4)",
+  "--title-shadow": "rgba(0, 217, 255, 0.6)",
+  "backgroundMode": "threat"
 }

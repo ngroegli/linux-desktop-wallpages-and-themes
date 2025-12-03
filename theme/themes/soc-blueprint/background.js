@@ -1,421 +1,502 @@
-// SOC Dashboard Background - Live security operations center monitoring
+// SOC Blueprint - Security Operations Center as Architectural Schematic
 (function(){
   let rafId = null;
-  let alerts = [];
-  let metrics = [];
-  let scanLines = [];
-  let threatIndicators = [];
-  let particles = [];
-  let gridLines = [];
+  let blueprintGrid = [];
+  let securityNodes = [];
+  let dataPipelines = [];
+  let scanBeams = [];
+  let alertMarkers = [];
+  let annotations = [];
+  let drawingLines = [];
 
-  // Floating data particle
-  class DataParticle {
-    constructor(canvas) {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.vx = (Math.random() - 0.5) * 0.5;
-      this.vy = (Math.random() - 0.5) * 0.5;
-      this.size = 1 + Math.random() * 2;
-      this.opacity = 0.3 + Math.random() * 0.5;
-      this.pulsePhase = Math.random() * Math.PI * 2;
-      this.canvasWidth = canvas.width;
-      this.canvasHeight = canvas.height;
-    }
+  // Blueprint color scheme
+  const COLORS = {
+    blueprintBg: '#0E1F3F',
+    blueprintDark: '#112B54',
+    cyanLine: '#15D4FF',
+    cyanLight: '#6CD5FF',
+    white: '#FFFFFF',
+    yellow: '#FFE135',
+    red: '#FF3B3B',
+    grey: '#8F9BA6'
+  };
 
-    update(time) {
-      this.x += this.vx;
-      this.y += this.vy;
-
-      if (this.x < 0 || this.x > this.canvasWidth) this.vx *= -1;
-      if (this.y < 0 || this.y > this.canvasHeight) this.vy *= -1;
-
-      this.pulse = Math.sin(time * 0.002 + this.pulsePhase) * 0.5 + 0.5;
-    }
-
-    draw(ctx) {
-      ctx.fillStyle = `rgba(0, 255, 200, ${this.opacity * this.pulse})`;
-      ctx.shadowBlur = 5;
-      ctx.shadowColor = '#00ffc8';
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowBlur = 0;
-    }
-  }
-
-  // Scanning line effect - more subtle
-  class ScanLine {
-    constructor(canvas) {
-      this.y = Math.random() * canvas.height;
-      this.speed = 0.3 + Math.random() * 0.5;
-      this.opacity = 0.1 + Math.random() * 0.15;
-      this.height = canvas.height;
-    }
-
-    update() {
-      this.y += this.speed;
-      if (this.y > this.height) this.y = 0;
+  // Blueprint grid line
+  class GridLine {
+    constructor(canvas, isVertical, position, isDashed) {
+      this.isVertical = isVertical;
+      this.position = position;
+      this.isDashed = isDashed;
+      this.opacity = isDashed ? 0.15 : 0.25;
     }
 
     draw(ctx, canvas) {
-      const gradient = ctx.createLinearGradient(0, this.y - 30, 0, this.y + 30);
-      gradient.addColorStop(0, 'rgba(0, 255, 200, 0)');
-      gradient.addColorStop(0.5, `rgba(0, 255, 200, ${this.opacity})`);
-      gradient.addColorStop(1, 'rgba(0, 255, 200, 0)');
+      ctx.strokeStyle = `rgba(21, 212, 255, ${this.opacity})`;
+      ctx.lineWidth = this.isDashed ? 0.5 : 1;
+      
+      if (this.isDashed) {
+        ctx.setLineDash([5, 5]);
+      }
+
+      ctx.beginPath();
+      if (this.isVertical) {
+        ctx.moveTo(this.position, 0);
+        ctx.lineTo(this.position, canvas.height);
+      } else {
+        ctx.moveTo(0, this.position);
+        ctx.lineTo(canvas.width, this.position);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // Security node (subsystem)
+  class SecurityNode {
+    constructor(canvas, type) {
+      this.x = 100 + Math.random() * (canvas.width - 200);
+      this.y = 100 + Math.random() * (canvas.height - 200);
+      this.size = 30 + Math.random() * 20;
+      this.type = type; // 'firewall', 'sensor', 'endpoint', 'server'
+      this.pulseOffset = Math.random() * Math.PI * 2;
+      this.active = Math.random() > 0.3;
+      this.label = this.generateLabel(type);
+    }
+
+    generateLabel(type) {
+      const labels = {
+        firewall: ['FW-01', 'FW-02', 'FW-EDGE'],
+        sensor: ['IDS-A', 'IDS-B', 'IPS-01'],
+        endpoint: ['EP-01', 'EP-02', 'WORKSTATION'],
+        server: ['SVR-DB', 'SVR-WEB', 'SVR-APP']
+      };
+      const list = labels[type] || ['NODE'];
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    update(time) {
+      this.pulse = Math.sin(time * 0.001 + this.pulseOffset) * 0.3 + 0.7;
+    }
+
+    draw(ctx, time) {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+
+      // Node shape based on type
+      ctx.strokeStyle = this.active ? 
+        `rgba(21, 212, 255, ${this.pulse})` : 
+        `rgba(143, 155, 166, 0.6)`;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = this.active ? COLORS.cyanLine : 'transparent';
+      ctx.shadowBlur = this.active ? 10 : 0;
+
+      if (this.type === 'firewall') {
+        // Rectangle (wall)
+        ctx.strokeRect(-this.size/2, -this.size/2, this.size, this.size);
+      } else if (this.type === 'sensor') {
+        // Circle (sensor)
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size/2, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (this.type === 'endpoint') {
+        // Triangle (endpoint)
+        ctx.beginPath();
+        ctx.moveTo(0, -this.size/2);
+        ctx.lineTo(this.size/2, this.size/2);
+        ctx.lineTo(-this.size/2, this.size/2);
+        ctx.closePath();
+        ctx.stroke();
+      } else {
+        // Hexagon (server)
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 3) * i;
+          const x = Math.cos(angle) * this.size/2;
+          const y = Math.sin(angle) * this.size/2;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      // Center dot
+      if (this.active) {
+        ctx.fillStyle = `rgba(21, 212, 255, ${this.pulse})`;
+        ctx.beginPath();
+        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Label
+      ctx.shadowBlur = 0;
+      ctx.font = '10px monospace';
+      ctx.fillStyle = `rgba(108, 213, 255, 0.8)`;
+      ctx.textAlign = 'center';
+      ctx.fillText(this.label, 0, this.size/2 + 15);
+
+      ctx.restore();
+    }
+  }
+
+  // Data pipeline (connection line)
+  class DataPipeline {
+    constructor(canvas, from, to) {
+      this.from = from;
+      this.to = to;
+      this.flowOffset = 0;
+      this.flowSpeed = 0.5 + Math.random() * 0.5;
+      this.opacity = 0.4 + Math.random() * 0.3;
+      this.isDashed = Math.random() > 0.5;
+    }
+
+    update() {
+      this.flowOffset += this.flowSpeed;
+      if (this.flowOffset > 20) this.flowOffset = 0;
+    }
+
+    draw(ctx) {
+      ctx.strokeStyle = `rgba(21, 212, 255, ${this.opacity})`;
+      ctx.lineWidth = 1.5;
+      
+      if (this.isDashed) {
+        ctx.setLineDash([8, 8]);
+        ctx.lineDashOffset = -this.flowOffset;
+      }
+
+      // Draw line with arrow
+      ctx.beginPath();
+      ctx.moveTo(this.from.x, this.from.y);
+      ctx.lineTo(this.to.x, this.to.y);
+      ctx.stroke();
+
+      // Arrow head
+      const angle = Math.atan2(this.to.y - this.from.y, this.to.x - this.from.x);
+      const headLen = 10;
+      const midX = (this.from.x + this.to.x) / 2;
+      const midY = (this.from.y + this.to.y) / 2;
+
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(midX, midY);
+      ctx.lineTo(
+        midX - headLen * Math.cos(angle - Math.PI / 6),
+        midY - headLen * Math.sin(angle - Math.PI / 6)
+      );
+      ctx.moveTo(midX, midY);
+      ctx.lineTo(
+        midX - headLen * Math.cos(angle + Math.PI / 6),
+        midY - headLen * Math.sin(angle + Math.PI / 6)
+      );
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // Scanning beam
+  class BlueprintScanBeam {
+    constructor(canvas, isVertical) {
+      this.isVertical = isVertical;
+      this.position = Math.random();
+      this.speed = 0.00008 + Math.random() * 0.00008;
+      this.opacity = 0.3 + Math.random() * 0.2;
+    }
+
+    update(canvas) {
+      this.position += this.speed;
+      if (this.position > 1) this.position = 0;
+    }
+
+    draw(ctx, canvas) {
+      const pos = this.isVertical ? 
+        this.position * canvas.height : 
+        this.position * canvas.width;
+
+      const gradient = this.isVertical ?
+        ctx.createLinearGradient(0, pos - 40, 0, pos + 40) :
+        ctx.createLinearGradient(pos - 40, 0, pos + 40, 0);
+
+      gradient.addColorStop(0, 'rgba(21, 212, 255, 0)');
+      gradient.addColorStop(0.5, `rgba(21, 212, 255, ${this.opacity})`);
+      gradient.addColorStop(1, 'rgba(21, 212, 255, 0)');
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, this.y - 30, canvas.width, 60);
+      
+      if (this.isVertical) {
+        ctx.fillRect(0, pos - 40, canvas.width, 80);
+      } else {
+        ctx.fillRect(pos - 40, 0, 80, canvas.height);
+      }
+
+      // Center line
+      ctx.strokeStyle = `rgba(21, 212, 255, ${this.opacity * 1.5})`;
+      ctx.lineWidth = 1;
+      ctx.shadowColor = COLORS.cyanLine;
+      ctx.shadowBlur = 8;
+
+      ctx.beginPath();
+      if (this.isVertical) {
+        ctx.moveTo(0, pos);
+        ctx.lineTo(canvas.width, pos);
+      } else {
+        ctx.moveTo(pos, 0);
+        ctx.lineTo(pos, canvas.height);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
     }
   }
 
-  // Alert notification
-  class Alert {
+  // Alert marker
+  class AlertMarker {
+    constructor(canvas) {
+      this.x = 100 + Math.random() * (canvas.width - 200);
+      this.y = 100 + Math.random() * (canvas.height - 200);
+      this.size = 15;
+      this.pulseOffset = Math.random() * Math.PI * 2;
+      this.severity = Math.random();
+    }
+
+    update(time) {
+      this.pulse = Math.sin(time * 0.003 + this.pulseOffset);
+    }
+
+    draw(ctx, time) {
+      const color = this.severity > 0.7 ? COLORS.red : COLORS.yellow;
+      const alpha = 0.6 + this.pulse * 0.4;
+
+      ctx.save();
+      ctx.translate(this.x, this.y);
+
+      // Pulsing circle
+      ctx.strokeStyle = color.replace(')', ', ' + alpha + ')');
+      ctx.lineWidth = 2;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 15;
+
+      ctx.beginPath();
+      ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Inner circle
+      ctx.beginPath();
+      ctx.arc(0, 0, this.size * 0.5, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Crosshair
+      ctx.beginPath();
+      ctx.moveTo(-this.size * 1.5, 0);
+      ctx.lineTo(this.size * 1.5, 0);
+      ctx.moveTo(0, -this.size * 1.5);
+      ctx.lineTo(0, this.size * 1.5);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+  }
+
+  // Blueprint annotation
+  class Annotation {
     constructor(canvas) {
       this.x = 50 + Math.random() * (canvas.width - 100);
-      this.y = canvas.height;
-      this.targetY = 100 + Math.random() * (canvas.height - 200);
-      this.speed = 2 + Math.random() * 3;
-      this.life = 200 + Math.random() * 100;
-      this.maxLife = this.life;
-      this.severity = Math.random();
-      this.message = this.generateMessage();
+      this.y = 50 + Math.random() * (canvas.height - 100);
+      this.text = this.generateText();
+      this.opacity = 0.5 + Math.random() * 0.3;
     }
 
-    generateMessage() {
-      const types = ['INTRUSION', 'MALWARE', 'ANOMALY', 'BREACH', 'SCAN', 'EXPLOIT'];
-      const sources = ['FW-01', 'IDS-03', 'EDR-02', 'SIEM', 'WAF-04', 'PROXY'];
-      return `[${sources[Math.floor(Math.random() * sources.length)]}] ${types[Math.floor(Math.random() * types.length)]}`;
-    }
-
-    update() {
-      if (this.y > this.targetY) {
-        this.y -= this.speed;
-      }
-      this.life--;
-      return this.life > 0;
-    }
-
-    draw(ctx) {
-      const alpha = Math.min(this.life / 50, 1) * (this.life / this.maxLife);
-      // Use proper green for safe events
-      const color = this.severity > 0.7 ? '#ff3333' : this.severity > 0.4 ? '#ffaa00' : '#00ff66';
-
-      // Alert box with glow
-      ctx.fillStyle = `${color}15`;
-      ctx.strokeStyle = `${color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`;
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = color;
-
-      const width = 220;
-      const height = 35;
-      const cornerRadius = 5;
-
-      // Rounded rectangle
-      ctx.beginPath();
-      ctx.moveTo(this.x - width/2 + cornerRadius, this.y - height/2);
-      ctx.lineTo(this.x + width/2 - cornerRadius, this.y - height/2);
-      ctx.quadraticCurveTo(this.x + width/2, this.y - height/2, this.x + width/2, this.y - height/2 + cornerRadius);
-      ctx.lineTo(this.x + width/2, this.y + height/2 - cornerRadius);
-      ctx.quadraticCurveTo(this.x + width/2, this.y + height/2, this.x + width/2 - cornerRadius, this.y + height/2);
-      ctx.lineTo(this.x - width/2 + cornerRadius, this.y + height/2);
-      ctx.quadraticCurveTo(this.x - width/2, this.y + height/2, this.x - width/2, this.y + height/2 - cornerRadius);
-      ctx.lineTo(this.x - width/2, this.y - height/2 + cornerRadius);
-      ctx.quadraticCurveTo(this.x - width/2, this.y - height/2, this.x - width/2 + cornerRadius, this.y - height/2);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-
-      // Text with better styling
-      ctx.shadowBlur = 5;
-      ctx.fillStyle = `${color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`;
-      ctx.font = 'bold 11px monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(this.message, this.x, this.y);
-      ctx.shadowBlur = 0;
-    }
-  }
-
-  // Metric graph (CPU, memory, threat level, etc.)
-  class MetricGraph {
-    constructor(x, y, width, height, label) {
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-      this.label = label;
-      this.dataPoints = [];
-      this.maxPoints = 50;
-      this.value = 30 + Math.random() * 40;
-
-      for (let i = 0; i < this.maxPoints; i++) {
-        this.dataPoints.push(30 + Math.random() * 40);
-      }
-    }
-
-    update() {
-      // Smooth value changes
-      const target = 20 + Math.random() * 60;
-      this.value += (target - this.value) * 0.05;
-
-      this.dataPoints.push(this.value);
-      if (this.dataPoints.length > this.maxPoints) {
-        this.dataPoints.shift();
-      }
-    }
-
-    draw(ctx) {
-      // Background with gradient
-      const bgGradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
-      bgGradient.addColorStop(0, 'rgba(0, 20, 30, 0.7)');
-      bgGradient.addColorStop(1, 'rgba(0, 10, 15, 0.7)');
-      ctx.fillStyle = bgGradient;
-      ctx.fillRect(this.x, this.y, this.width, this.height);
-
-      // Border with glow
-      ctx.strokeStyle = 'rgba(0, 255, 200, 0.4)';
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 5;
-      ctx.shadowColor = '#00ffc8';
-      ctx.strokeRect(this.x, this.y, this.width, this.height);
-      ctx.shadowBlur = 0;
-
-      // Fill area under graph
-      ctx.fillStyle = 'rgba(0, 255, 170, 0.1)';
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y + this.height);
-      this.dataPoints.forEach((value, i) => {
-        const x = this.x + (i / this.maxPoints) * this.width;
-        const y = this.y + this.height - (value / 100) * this.height;
-        ctx.lineTo(x, y);
-      });
-      ctx.lineTo(this.x + this.width, this.y + this.height);
-      ctx.closePath();
-      ctx.fill();
-
-      // Graph line with glow
-      ctx.strokeStyle = '#00ffaa';
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = '#00ffaa';
-      ctx.beginPath();
-
-      this.dataPoints.forEach((value, i) => {
-        const x = this.x + (i / this.maxPoints) * this.width;
-        const y = this.y + this.height - (value / 100) * this.height;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-
-      // Label with better styling
-      ctx.fillStyle = 'rgba(0, 255, 200, 0.9)';
-      ctx.font = 'bold 10px monospace';
-      ctx.textAlign = 'left';
-      ctx.fillText(this.label, this.x + 8, this.y + 15);
-
-      ctx.fillStyle = 'rgba(0, 255, 170, 1)';
-      ctx.font = 'bold 12px monospace';
-      ctx.fillText(`${Math.round(this.value)}%`, this.x + 8, this.y + 30);
-    }
-  }
-
-  // Threat indicator - rotating radar-style indicator
-  class ThreatIndicator {
-    constructor(x, y, radius) {
-      this.x = x;
-      this.y = y;
-      this.radius = radius;
-      this.angle = 0;
-      this.threats = [];
-
-      // Generate some threat points
-      for (let i = 0; i < 8; i++) {
-        this.threats.push({
-          angle: Math.random() * Math.PI * 2,
-          distance: 0.3 + Math.random() * 0.6,
-          severity: Math.random()
-        });
-      }
-    }
-
-    update() {
-      this.angle += 0.02;
-      if (this.angle > Math.PI * 2) this.angle = 0;
+    generateText() {
+      const texts = [
+        'THREAT INTEL',
+        'LOG PIPELINE',
+        'DATA LAKE',
+        'MITRE ATT&CK',
+        'SIEM CORRELATION',
+        'EDR AGENT',
+        'NETWORK TAP',
+        'SECURITY ZONE'
+      ];
+      return texts[Math.floor(Math.random() * texts.length)];
     }
 
     draw(ctx) {
       ctx.save();
       ctx.translate(this.x, this.y);
 
-      // Outer circle
-      ctx.strokeStyle = 'rgba(0, 200, 255, 0.3)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Inner circles
-      ctx.strokeStyle = 'rgba(0, 200, 255, 0.2)';
+      // Annotation line
+      ctx.strokeStyle = `rgba(108, 213, 255, ${this.opacity})`;
       ctx.lineWidth = 1;
-      for (let i = 1; i <= 3; i++) {
-        ctx.beginPath();
-        ctx.arc(0, 0, (this.radius / 4) * i, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+      ctx.setLineDash([3, 3]);
 
-      // Crosshair
-      ctx.strokeStyle = 'rgba(0, 200, 255, 0.2)';
-      ctx.beginPath();
-      ctx.moveTo(-this.radius, 0);
-      ctx.lineTo(this.radius, 0);
-      ctx.moveTo(0, -this.radius);
-      ctx.lineTo(0, this.radius);
-      ctx.stroke();
-
-      // Scanning beam
-      ctx.strokeStyle = 'rgba(0, 255, 200, 0.3)';
-      ctx.lineWidth = 2;
-      const gradient = ctx.createLinearGradient(0, 0,
-        this.radius * Math.cos(this.angle),
-        this.radius * Math.sin(this.angle));
-      gradient.addColorStop(0, 'rgba(0, 255, 200, 0)');
-      gradient.addColorStop(1, 'rgba(0, 255, 200, 0.5)');
-      ctx.strokeStyle = gradient;
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      ctx.lineTo(this.radius * Math.cos(this.angle), this.radius * Math.sin(this.angle));
+      ctx.lineTo(40, -20);
+      ctx.lineTo(80, -20);
       ctx.stroke();
+      ctx.setLineDash([]);
 
-      // Threat points with proper green
-      this.threats.forEach(threat => {
-        const x = threat.distance * this.radius * Math.cos(threat.angle);
-        const y = threat.distance * this.radius * Math.sin(threat.angle);
+      // Text
+      ctx.font = '9px monospace';
+      ctx.fillStyle = `rgba(108, 213, 255, ${this.opacity})`;
+      ctx.textAlign = 'left';
+      ctx.fillText(this.text, 42, -17);
 
-        const color = threat.severity > 0.7 ? '#ff3333' : threat.severity > 0.4 ? '#ffaa00' : '#00ff66';
-        ctx.fillStyle = color;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = color;
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.shadowBlur = 0;
       ctx.restore();
     }
   }
 
+  // Auto-drawing line effect
+  class DrawingLine {
+    constructor(canvas) {
+      this.startX = Math.random() * canvas.width;
+      this.startY = Math.random() * canvas.height;
+      this.endX = Math.random() * canvas.width;
+      this.endY = Math.random() * canvas.height;
+      this.progress = 0;
+      this.speed = 0.005 + Math.random() * 0.005;
+      this.opacity = 0.3 + Math.random() * 0.3;
+    }
+
+    update() {
+      this.progress += this.speed;
+      if (this.progress > 1) this.progress = 1;
+    }
+
+    draw(ctx) {
+      if (this.progress >= 1) return;
+
+      const currentX = this.startX + (this.endX - this.startX) * this.progress;
+      const currentY = this.startY + (this.endY - this.startY) * this.progress;
+
+      ctx.strokeStyle = `rgba(21, 212, 255, ${this.opacity})`;
+      ctx.lineWidth = 1.5;
+      ctx.shadowColor = COLORS.cyanLine;
+      ctx.shadowBlur = 5;
+
+      ctx.beginPath();
+      ctx.moveTo(this.startX, this.startY);
+      ctx.lineTo(currentX, currentY);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+  }
+
   function init(canvas) {
-    // Create floating data particles
-    for (let i = 0; i < 80; i++) {
-      particles.push(new DataParticle(canvas));
-    }
+    blueprintGrid = [];
+    securityNodes = [];
+    dataPipelines = [];
+    scanBeams = [];
+    alertMarkers = [];
+    annotations = [];
+    drawingLines = [];
 
-    // Create scan lines
-    for (let i = 0; i < 2; i++) {
-      scanLines.push(new ScanLine(canvas));
-    }
-
-    // Create metric graphs
-    const graphWidth = 190;
-    const graphHeight = 85;
-    const margin = 25;
-
-    metrics.push(new MetricGraph(margin, margin, graphWidth, graphHeight, 'CPU Load'));
-    metrics.push(new MetricGraph(margin, margin + graphHeight + 20, graphWidth, graphHeight, 'Network'));
-    metrics.push(new MetricGraph(canvas.width - graphWidth - margin, margin, graphWidth, graphHeight, 'Threats'));
-    metrics.push(new MetricGraph(canvas.width - graphWidth - margin, margin + graphHeight + 20, graphWidth, graphHeight, 'Memory'));
-
-    // Create threat indicator (central radar)
-    threatIndicators.push(new ThreatIndicator(canvas.width / 2, canvas.height / 2, 140));
-  }
-
-  function update(canvas) {
-    // Update all elements
-    particles.forEach(particle => particle.update(Date.now()));
-    scanLines.forEach(line => line.update());
-    metrics.forEach(metric => metric.update());
-    threatIndicators.forEach(indicator => indicator.update());
-
-    // Add random alerts (less frequent)
-    if (Math.random() < 0.015) {
-      alerts.push(new Alert(canvas));
-    }
-
-    // Update and filter alerts
-    alerts = alerts.filter(alert => alert.update());
-  }
-
-  function draw(ctx, canvas) {
-    // Dark background with subtle gradient
-    const gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 0,
-                                             canvas.width / 2, canvas.height / 2, canvas.width * 0.8);
-    gradient.addColorStop(0, '#001a1a');
-    gradient.addColorStop(0.5, '#001515');
-    gradient.addColorStop(1, '#000a0a');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw subtle grid lines
-    ctx.strokeStyle = 'rgba(0, 255, 200, 0.05)';
-    ctx.lineWidth = 1;
+    // Create blueprint grid
     const gridSpacing = 50;
     for (let x = 0; x < canvas.width; x += gridSpacing) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, canvas.height);
-      ctx.stroke();
+      blueprintGrid.push(new GridLine(canvas, true, x, x % (gridSpacing * 4) !== 0));
     }
     for (let y = 0; y < canvas.height; y += gridSpacing) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(canvas.width, y);
-      ctx.stroke();
+      blueprintGrid.push(new GridLine(canvas, false, y, y % (gridSpacing * 4) !== 0));
     }
 
-    // Draw floating particles
-    particles.forEach(particle => particle.draw(ctx));
+    // Create security nodes
+    const nodeTypes = ['firewall', 'sensor', 'endpoint', 'server'];
+    for (let i = 0; i < 12; i++) {
+      const type = nodeTypes[Math.floor(Math.random() * nodeTypes.length)];
+      securityNodes.push(new SecurityNode(canvas, type));
+    }
 
-    // Draw scan lines
-    scanLines.forEach(line => line.draw(ctx, canvas));
+    // Create data pipelines between nodes
+    for (let i = 0; i < 15; i++) {
+      const from = securityNodes[Math.floor(Math.random() * securityNodes.length)];
+      const to = securityNodes[Math.floor(Math.random() * securityNodes.length)];
+      if (from !== to) {
+        dataPipelines.push(new DataPipeline(canvas, from, to));
+      }
+    }
 
-    // Draw threat indicator (central radar)
-    threatIndicators.forEach(indicator => indicator.draw(ctx));
+    // Create scan beams
+    for (let i = 0; i < 2; i++) {
+      scanBeams.push(new BlueprintScanBeam(canvas, true));
+      scanBeams.push(new BlueprintScanBeam(canvas, false));
+    }
 
-    // Draw metric graphs
-    metrics.forEach(metric => metric.draw(ctx));
+    // Create alert markers
+    for (let i = 0; i < 5; i++) {
+      alertMarkers.push(new AlertMarker(canvas));
+    }
 
-    // Draw alerts
-    alerts.forEach(alert => alert.draw(ctx));
+    // Create annotations
+    for (let i = 0; i < 8; i++) {
+      annotations.push(new Annotation(canvas));
+    }
 
-    // Draw title/header with better styling
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = '#00ffc8';
-    ctx.fillStyle = 'rgba(0, 255, 200, 0.9)';
-    ctx.font = 'bold 16px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('[ SECURITY OPERATIONS CENTER ]', canvas.width / 2, 35);
-    ctx.shadowBlur = 0;
+    // Create drawing lines
+    for (let i = 0; i < 5; i++) {
+      drawingLines.push(new DrawingLine(canvas));
+    }
   }
 
-  function animate(canvas) {
+  function animate(canvas, startTime) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const animFrame = () => {
-      update(canvas);
-      draw(ctx, canvas);
-      rafId = requestAnimationFrame(animFrame);
+    const draw = (timestamp) => {
+      const time = timestamp - startTime;
+
+      // Blueprint background
+      const bgGradient = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 0,
+        canvas.width / 2, canvas.height / 2, canvas.width * 0.6
+      );
+      bgGradient.addColorStop(0, COLORS.blueprintDark);
+      bgGradient.addColorStop(1, COLORS.blueprintBg);
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw blueprint grid
+      blueprintGrid.forEach(line => line.draw(ctx, canvas));
+
+      // Draw data pipelines
+      dataPipelines.forEach(pipeline => {
+        pipeline.update();
+        pipeline.draw(ctx);
+      });
+
+      // Draw security nodes
+      securityNodes.forEach(node => {
+        node.update(time);
+        node.draw(ctx, time);
+      });
+
+      // Draw annotations
+      annotations.forEach(annotation => annotation.draw(ctx));
+
+      // Draw alert markers
+      alertMarkers.forEach(marker => {
+        marker.update(time);
+        marker.draw(ctx, time);
+      });
+
+      // Draw auto-drawing lines
+      drawingLines.forEach(line => {
+        line.update();
+        line.draw(ctx);
+      });
+
+      // Draw scan beams
+      scanBeams.forEach(beam => {
+        beam.update(canvas);
+        beam.draw(ctx, canvas);
+      });
+
+      rafId = requestAnimationFrame(draw);
     };
 
-    rafId = requestAnimationFrame(animFrame);
+    rafId = requestAnimationFrame(draw);
   }
 
   function start(canvas, mode) {
-    if (!canvas) return;
+    if (!canvas || mode !== 'soc') return;
 
     stop();
 
@@ -423,24 +504,20 @@
     canvas.height = window.innerHeight;
 
     init(canvas);
-    animate(canvas);
 
-    canvas.style.transition = 'opacity 1s ease-in';
+    const startTime = performance.now();
+    animate(canvas, startTime);
+
+    canvas.style.transition = 'opacity 1.5s ease-in-out';
     canvas.style.opacity = '1';
 
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      // Reinitialize
-      particles = [];
-      scanLines = [];
-      metrics = [];
-      threatIndicators = [];
-      alerts = [];
       init(canvas);
     };
-    window.addEventListener('resize', handleResize);
 
+    window.addEventListener('resize', handleResize);
     canvas._cleanupResize = () => {
       window.removeEventListener('resize', handleResize);
     };
