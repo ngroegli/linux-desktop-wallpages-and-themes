@@ -1,221 +1,407 @@
-// Clair Obscur: Expedition 33 - Atmospheric Dark Theme
+// Clair Obscur: Expedition 33 - Dark Fantasy with Metallic Gold
 (function(){
-  let animationId = null;
+  let rafId = null;
+  let particles = [];
+  let geometryShapes = [];
+  let fogLayers = [];
 
-  function start(canvas, mode){
-    if(mode !== 'expedition') return;
+  // Color palette inspired by Expedition 33
+  // Metallic gold requires highlights and shadows
+  const COLORS = {
+    bg: '#0c0c0f',
+    bgAlt: '#0a0f18',
+    goldHighlight: '#ffd700',  // Bright metallic highlight
+    goldMid: '#d4af37',        // Mid-tone gold
+    goldDark: '#8b6914',       // Dark shadow gold
+    goldDeep: '#5c4509',       // Deepest shadow
+    teal: '#5a7a7a'
+  };
 
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.style.opacity = '0.5';
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-
-    // Bright straight gold color palette - pure golden tones
-    const gold = '#D3AF37';        // Pure gold
-    const lightGold = '#FFED4E';   // Bright shiny gold
-    const darkGold = '#FFA500';    // Deep golden orange
-
-    let time = 0;
-    let particles = [];
-
-    // More glowing golden particles - bigger and brighter
-    for(let i = 0; i < 100; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 5 + 2,
-        speed: Math.random() * 0.3 + 0.08,
-        offset: Math.random() * Math.PI * 2
-      });
+  // Golden particle class
+  class GoldenParticle {
+    constructor(canvas) {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 1;
+      this.speedX = (Math.random() - 0.5) * 0.15;
+      this.speedY = (Math.random() - 0.5) * 0.15;
+      this.opacity = Math.random() * 0.4 + 0.3;
+      this.twinkle = Math.random() * Math.PI * 2;
+      this.twinkleSpeed = 0.001 + Math.random() * 0.002;
     }
 
-    // Draw shiny geometric patterns with glow
-    function drawGeometry() {
-      ctx.strokeStyle = gold;
-      ctx.lineWidth = 3;
-      ctx.globalAlpha = 0.25;
-      ctx.shadowColor = lightGold;
-      ctx.shadowBlur = 20;
+    update(time, canvas) {
+      this.x += this.speedX;
+      this.y += this.speedY;
 
-      // Concentric circles - bigger and brighter with glow
-      for(let i = 1; i <= 10; i++) {
-        const radius = Math.min(canvas.width, canvas.height) * 0.15 * i;
-        const pulse = Math.sin(time * 0.5 + i * 0.3) * 0.15 + 0.85;
+      // Wrap around
+      if (this.x < 0) this.x = canvas.width;
+      if (this.x > canvas.width) this.x = 0;
+      if (this.y < 0) this.y = canvas.height;
+      if (this.y > canvas.height) this.y = 0;
 
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius * pulse, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // Radiating lines - thicker and brighter, extend further
-      ctx.lineWidth = 4;
-      for(let i = 0; i < 32; i++) {
-        const angle = (Math.PI * 2 / 32) * i + time * 0.1;
-        const innerRadius = Math.min(canvas.width, canvas.height) * 0.18;
-        const outerRadius = Math.max(canvas.width, canvas.height) * 0.8;
-
-        ctx.beginPath();
-        ctx.moveTo(
-          centerX + Math.cos(angle) * innerRadius,
-          centerY + Math.sin(angle) * innerRadius
-        );
-        ctx.lineTo(
-          centerX + Math.cos(angle) * outerRadius,
-          centerY + Math.sin(angle) * outerRadius
-        );
-        ctx.stroke();
-      }
-
-      ctx.shadowBlur = 0;
-      ctx.globalAlpha = 1;
+      this.twinkle += this.twinkleSpeed;
     }
 
-    // Draw floating golden particles with intense glow
-    function drawParticles() {
-      particles.forEach((p, i) => {
-        const pulse = (Math.sin(time + p.offset) + 1) / 2;
-        const alpha = pulse * 0.8 + 0.3;
+    draw(ctx, time) {
+      const brightness = Math.sin(this.twinkle) * 0.3 + 0.7;
+      const alpha = this.opacity * brightness;
 
-        // Outer glow - bigger and brighter
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 6);
-        gradient.addColorStop(0, lightGold);
-        gradient.addColorStop(0.3, gold);
-        gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+      // Metallic glow with graduated highlights
+      const glow = ctx.createRadialGradient(
+        this.x, this.y, 0,
+        this.x, this.y, this.size * 5
+      );
+      glow.addColorStop(0, `rgba(255, 215, 0, ${alpha * 0.9})`);    // Bright highlight
+      glow.addColorStop(0.3, `rgba(212, 175, 55, ${alpha * 0.6})`); // Mid gold
+      glow.addColorStop(0.6, `rgba(139, 105, 20, ${alpha * 0.3})`); // Dark shadow
+      glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
-        ctx.fillStyle = gradient;
-        ctx.globalAlpha = alpha * 0.6;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 6, 0, Math.PI * 2);
-        ctx.fill();
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * 5, 0, Math.PI * 2);
+      ctx.fill();
 
-        // Core particle - brighter
-        ctx.fillStyle = lightGold;
-        ctx.globalAlpha = alpha;
-        ctx.shadowColor = lightGold;
-        ctx.shadowBlur = 15;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
+      // Metallic core with gradient (creates 3D sphere effect)
+      const metallic = ctx.createRadialGradient(
+        this.x - this.size * 0.3, this.y - this.size * 0.3, 0,
+        this.x, this.y, this.size * 1.5
+      );
+      metallic.addColorStop(0, `rgba(255, 215, 0, ${alpha})`);      // Bright spot
+      metallic.addColorStop(0.4, `rgba(212, 175, 55, ${alpha})`);   // Mid tone
+      metallic.addColorStop(0.8, `rgba(139, 105, 20, ${alpha * 0.8})`); // Shadow
+      metallic.addColorStop(1, `rgba(92, 69, 9, ${alpha * 0.6})`);  // Deep shadow
 
-        // Update
-        p.y -= p.speed;
-        if(p.y < -20) {
-          p.y = canvas.height + 20;
-          p.x = Math.random() * canvas.width;
-        }
-      });
-
-      ctx.globalAlpha = 1;
+      ctx.fillStyle = metallic;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
     }
-
-    // Draw '33' in center with shiny Art Deco style - BIGGER AND BRIGHTER
-    function drawTitle() {
-      const fontSize = Math.min(canvas.width, canvas.height) / 3;  // Bigger!
-      ctx.font = `bold ${fontSize}px serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-
-      const pulse = Math.sin(time * 0.8) * 0.15 + 0.85;
-
-      // Intense outer glow
-      ctx.shadowColor = lightGold;
-      ctx.shadowBlur = 80;
-      ctx.fillStyle = lightGold;
-      ctx.globalAlpha = 0.6 * pulse;
-      ctx.fillText('33', centerX, centerY);
-
-      // Mid glow
-      ctx.shadowBlur = 40;
-      ctx.fillStyle = gold;
-      ctx.globalAlpha = 0.8 * pulse;
-      ctx.fillText('33', centerX, centerY);
-
-      // Main text - pure bright gold
-      ctx.shadowBlur = 20;
-      ctx.fillStyle = lightGold;
-      ctx.globalAlpha = 0.9 * pulse;
-      ctx.fillText('33', centerX, centerY);
-
-      ctx.shadowBlur = 0;
-      ctx.globalAlpha = 1;
-
-      // Subtitle - brighter
-      const subtitleSize = fontSize / 4.5;
-      ctx.font = `bold ${subtitleSize}px monospace`;
-      ctx.fillStyle = gold;
-      ctx.shadowColor = gold;
-      ctx.shadowBlur = 10;
-      ctx.globalAlpha = 0.6;
-      ctx.fillText('EXPEDITION', centerX, centerY + fontSize * 0.65);
-      ctx.shadowBlur = 0;
-      ctx.globalAlpha = 1;
-    }
-
-    // Corner decorations - bigger and shinier
-    function drawCorners() {
-      const size = Math.min(canvas.width, canvas.height) / 25;
-      ctx.font = `${size}px monospace`;
-      ctx.fillStyle = gold;
-      ctx.globalAlpha = 0.5;
-      ctx.shadowColor = lightGold;
-      ctx.shadowBlur = 15;
-
-      const margin = size * 2;
-      const ornament = '◆';
-
-      // Four corners
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-      ctx.fillText(ornament, margin, margin);
-
-      ctx.textAlign = 'right';
-      ctx.fillText(ornament, canvas.width - margin, margin);
-
-      ctx.textBaseline = 'bottom';
-      ctx.fillText(ornament, canvas.width - margin, canvas.height - margin);
-
-      ctx.textAlign = 'left';
-      ctx.fillText(ornament, margin, canvas.height - margin);
-
-      ctx.shadowBlur = 0;
-      ctx.globalAlpha = 1;
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      drawGeometry();
-      drawParticles();
-      drawTitle();
-      drawCorners();
-
-      time += 0.02;
-      animationId = requestAnimationFrame(draw);
-    }
-
-    function handleResize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener('resize', handleResize);
-    draw();
   }
 
-  function stop(){
-    if(animationId){
-      cancelAnimationFrame(animationId);
-      animationId = null;
+  // Art Deco geometry shape
+  class GeometryShape {
+    constructor(canvas, type) {
+      this.type = type; // 'circle', 'arc', 'line'
+      this.x = canvas.width * (0.3 + Math.random() * 0.4);
+      this.y = canvas.height * (0.3 + Math.random() * 0.4);
+      this.size = Math.random() * 150 + 100;
+      this.rotation = Math.random() * Math.PI * 2;
+      this.rotationSpeed = (Math.random() - 0.5) * 0.0003;
+      this.offsetX = (Math.random() - 0.5) * 0.02;
+      this.offsetY = (Math.random() - 0.5) * 0.02;
+      this.opacity = 0.15 + Math.random() * 0.1;
+      this.pulseOffset = Math.random() * Math.PI * 2;
+    }
+
+    update(time) {
+      this.rotation += this.rotationSpeed;
+      this.x += this.offsetX;
+      this.y += this.offsetY;
+    }
+
+    draw(ctx, time) {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+
+      const pulse = Math.sin(time * 0.0005 + this.pulseOffset) * 0.1 + 0.9;
+
+      // Metallic stroke with gradient for dimensional effect
+      const gradient = ctx.createLinearGradient(
+        -this.size, -this.size,
+        this.size, this.size
+      );
+      gradient.addColorStop(0, `rgba(255, 215, 0, ${this.opacity * pulse * 0.8})`);
+      gradient.addColorStop(0.3, `rgba(212, 175, 55, ${this.opacity * pulse})`);
+      gradient.addColorStop(0.7, `rgba(139, 105, 20, ${this.opacity * pulse * 0.7})`);
+      gradient.addColorStop(1, `rgba(92, 69, 9, ${this.opacity * pulse * 0.5})`);
+
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
+      ctx.shadowBlur = 12;
+
+      if (this.type === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size * pulse, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (this.type === 'arc') {
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size * pulse, 0, Math.PI * 1.5);
+        ctx.stroke();
+      } else if (this.type === 'line') {
+        ctx.beginPath();
+        ctx.moveTo(-this.size, 0);
+        ctx.lineTo(this.size, 0);
+        ctx.stroke();
+      }
+
+      ctx.shadowBlur = 0;
+      ctx.restore();
+    }
+  }
+
+  // Fog layer
+  class FogLayer {
+    constructor(canvas, index) {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.width = canvas.width * (0.4 + Math.random() * 0.3);
+      this.height = canvas.height * (0.3 + Math.random() * 0.2);
+      this.speedX = (Math.random() - 0.5) * 0.1;
+      this.speedY = (Math.random() - 0.5) * 0.1;
+      this.opacity = 0.03 + Math.random() * 0.04;
+      this.fadeOffset = Math.random() * Math.PI * 2;
+    }
+
+    update(canvas) {
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      if (this.x < -this.width) this.x = canvas.width;
+      if (this.x > canvas.width) this.x = -this.width;
+      if (this.y < -this.height) this.y = canvas.height;
+      if (this.y > canvas.height) this.y = -this.height;
+    }
+
+    draw(ctx, time) {
+      const fade = Math.sin(time * 0.0003 + this.fadeOffset) * 0.3 + 0.7;
+
+      const gradient = ctx.createRadialGradient(
+        this.x, this.y, 0,
+        this.x, this.y, this.width
+      );
+      // Metallic fog with subtle highlights
+      gradient.addColorStop(0, `rgba(255, 215, 0, ${this.opacity * fade * 0.4})`);
+      gradient.addColorStop(0.3, `rgba(212, 175, 55, ${this.opacity * fade * 0.6})`);
+      gradient.addColorStop(0.6, `rgba(139, 105, 20, ${this.opacity * fade * 0.4})`);
+      gradient.addColorStop(0.8, `rgba(90, 122, 122, ${this.opacity * fade * 0.3})`);
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.ellipse(this.x, this.y, this.width, this.height, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function init(canvas) {
+    particles = [];
+    geometryShapes = [];
+    fogLayers = [];
+
+    // Create golden particles (low density)
+    for (let i = 0; i < 60; i++) {
+      particles.push(new GoldenParticle(canvas));
+    }
+
+    // Create geometry shapes
+    const shapeTypes = ['circle', 'arc', 'line'];
+    for (let i = 0; i < 8; i++) {
+      const type = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+      geometryShapes.push(new GeometryShape(canvas, type));
+    }
+
+    // Create fog layers
+    for (let i = 0; i < 5; i++) {
+      fogLayers.push(new FogLayer(canvas, i));
+    }
+  }
+
+  function drawAuroraWaves(ctx, canvas, time) {
+    ctx.globalAlpha = 0.1;
+
+    for (let i = 0; i < 3; i++) {
+      const gradient = ctx.createLinearGradient(
+        0, canvas.height * 0.3,
+        0, canvas.height * 0.7
+      );
+
+      const offset = time * 0.0001 + i * 0.5;
+      const intensity = Math.sin(offset) * 0.3 + 0.5;
+
+      // Metallic aurora with highlights and shadows
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      gradient.addColorStop(0.3, `rgba(255, 215, 0, ${intensity * 0.3})`);
+      gradient.addColorStop(0.5, `rgba(212, 175, 55, ${intensity * 0.5})`);
+      gradient.addColorStop(0.7, `rgba(139, 105, 20, ${intensity * 0.4})`);
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    ctx.globalAlpha = 1;
+  }
+
+  function drawExpeditionTitle(ctx, canvas, time) {
+    ctx.save();
+
+    // Art Deco style font - tall, condensed, elegant
+    const fontSize = Math.min(canvas.width * 0.08, 120);
+    ctx.font = `bold ${fontSize}px "Cinzel Decorative", "Trajan Pro", "Copperplate", Georgia, serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    const x = canvas.width / 2;
+    const y = canvas.height * 0.08;
+    const text = 'EXPEDITION 33';
+
+    // Subtle pulsing effect
+    const pulse = Math.sin(time * 0.0005) * 0.1 + 0.9;
+
+    // Multiple shadow layers for depth (Art Deco style)
+    ctx.shadowColor = 'rgba(139, 105, 20, 0.8)';
+    ctx.shadowBlur = 30;
+    ctx.shadowOffsetY = 8;
+    ctx.fillStyle = 'rgba(92, 69, 9, 0.6)';
+    ctx.fillText(text, x + 3, y + 3);
+
+    ctx.shadowBlur = 20;
+    ctx.shadowOffsetY = 4;
+    ctx.fillStyle = 'rgba(139, 105, 20, 0.8)';
+    ctx.fillText(text, x + 2, y + 2);
+
+    // Main metallic gold text with gradient
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    const gradient = ctx.createLinearGradient(x, y, x, y + fontSize);
+    gradient.addColorStop(0, `rgba(255, 215, 0, ${0.95 * pulse})`);
+    gradient.addColorStop(0.3, `rgba(212, 175, 55, ${0.95 * pulse})`);
+    gradient.addColorStop(0.6, `rgba(212, 175, 55, ${0.9 * pulse})`);
+    gradient.addColorStop(1, `rgba(139, 105, 20, ${0.85 * pulse})`);
+
+    ctx.fillStyle = gradient;
+    ctx.fillText(text, x, y);
+
+    // Bright highlight stroke (top edge only)
+    ctx.strokeStyle = `rgba(255, 215, 0, ${0.4 * pulse})`;
+    ctx.lineWidth = 2;
+    ctx.shadowColor = 'rgba(255, 215, 0, 0.6)';
+    ctx.shadowBlur = 15;
+    ctx.strokeText(text, x, y);
+
+    // Art Deco decorative lines above and below
+    ctx.shadowBlur = 0;
+    const lineY1 = y - fontSize * 0.15;
+    const lineY2 = y + fontSize * 1.15;
+    const lineWidth = canvas.width * 0.25;
+
+    // Top decorative line
+    const topGradient = ctx.createLinearGradient(x - lineWidth/2, 0, x + lineWidth/2, 0);
+    topGradient.addColorStop(0, 'rgba(212, 175, 55, 0)');
+    topGradient.addColorStop(0.5, `rgba(255, 215, 0, ${0.6 * pulse})`);
+    topGradient.addColorStop(1, 'rgba(212, 175, 55, 0)');
+
+    ctx.strokeStyle = topGradient;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x - lineWidth/2, lineY1);
+    ctx.lineTo(x + lineWidth/2, lineY1);
+    ctx.stroke();
+
+    // Bottom decorative line
+    ctx.beginPath();
+    ctx.moveTo(x - lineWidth/2, lineY2);
+    ctx.lineTo(x + lineWidth/2, lineY2);
+    ctx.stroke();
+
+    ctx.restore();
+  }  function animate(canvas, startTime) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const draw = (timestamp) => {
+      const time = timestamp - startTime;
+
+      // Dark gradient background
+      const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      bgGradient.addColorStop(0, COLORS.bg);
+      bgGradient.addColorStop(0.5, COLORS.bgAlt);
+      bgGradient.addColorStop(1, COLORS.bg);
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw aurora waves (subtle gold light rays)
+      drawAuroraWaves(ctx, canvas, time);
+
+      // Draw fog layers (bottom)
+      fogLayers.forEach(fog => {
+        fog.update(canvas);
+        fog.draw(ctx, time);
+      });
+
+      // Draw geometry shapes (middle - parallax)
+      ctx.globalAlpha = 1;
+      geometryShapes.forEach(shape => {
+        shape.update(time);
+        shape.draw(ctx, time);
+      });
+
+      // Draw golden particles (top)
+      particles.forEach(particle => {
+        particle.update(time, canvas);
+        particle.draw(ctx, time);
+      });
+
+      // Draw EXPEDITION 33 title
+      drawExpeditionTitle(ctx, canvas, time);
+
+      rafId = requestAnimationFrame(draw);
+    };
+
+    rafId = requestAnimationFrame(draw);
+  }
+
+  function start(canvas, mode) {
+    if (!canvas || mode !== 'expedition') return;
+
+    stop();
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    init(canvas);
+
+    const startTime = performance.now();
+    animate(canvas, startTime);
+
+    canvas.style.transition = 'opacity 1.5s ease-in-out';
+    canvas.style.opacity = '1';
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init(canvas);
+    };
+    window.addEventListener('resize', handleResize);
+
+    canvas._cleanupResize = () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }
+
+  function stop() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    const canvas = document.getElementById('background-canvas');
+    if (canvas) {
+      if (canvas._cleanupResize) {
+        canvas._cleanupResize();
+        delete canvas._cleanupResize;
+      }
+      canvas.style.opacity = '0';
+      const ctx = canvas.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
   }
 
   window.THEME_BACKGROUND = {
-    start: start,
-    stop: stop
+    start,
+    stop
   };
-
 })();
