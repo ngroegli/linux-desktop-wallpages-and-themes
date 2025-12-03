@@ -71,6 +71,7 @@ WALLPAPER_BACKGROUND.stopBackground()
 #### Flask REST API
 - **Technology**: Python 3, Flask, Flask-RESTX, Flask-CORS
 - **Port**: 5000 (default)
+- **Binding**: 127.0.0.1 (localhost only for security)
 - **Deployment**: systemd service
 - **Location**: `src/app.py`
 - **Documentation**: Interactive Swagger UI at `/api`

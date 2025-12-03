@@ -35,6 +35,7 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 - **Systemd Service**: Auto-start Flask API on system boot
 - **OpenBar Integration**: GNOME Shell color matching
 - **Single-file Builds**: Portable HTML wallpapers for Hidamari
+- **Localhost Only**: API binds to 127.0.0.1 for security (no external access)
 
 ## Quick Start
 
@@ -43,7 +44,7 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
    sudo ./install.sh
    ```
    This installs:
-   - Flask API as systemd service
+   - Flask API as systemd service (localhost only)
    - Themes to `~/WallpagesThemes/`
    - Single-file wallpapers for Hidamari
 

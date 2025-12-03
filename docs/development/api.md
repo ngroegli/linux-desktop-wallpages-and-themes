@@ -6,9 +6,22 @@ The Flask API provides real-time system metrics for the wallpaper frontend.
 
 - Built with Flask, Flask-RESTX, and `psutil`
 - Runs as a systemd service on port 5000
+- **Localhost only** - Binds to 127.0.0.1 for security (no external access)
 - CORS-enabled for browser access
 - Graceful fallback when API is unavailable
 - **Interactive Swagger UI documentation at `/api`**
+
+## Security
+
+The API is configured to bind only to `127.0.0.1` (localhost), which means:
+- ✅ Only processes on the same machine can access the API
+- ✅ No external network access to system metrics
+- ✅ Protected from remote exploitation
+- ✅ Suitable for desktop wallpaper use case
+
+If you need external access (not recommended), you would need to modify:
+- `web-wallpaper-api.service` - Change `127.0.0.1:5000` to `0.0.0.0:5000`
+- `src/app.py` - Change `host='127.0.0.1'` to `host='0.0.0.0'`
 
 ## Interactive API Documentation
 
