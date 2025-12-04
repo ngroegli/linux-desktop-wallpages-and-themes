@@ -287,4 +287,4 @@ class Health(Resource):
 if __name__ == '__main__':
     # Development server (localhost only for security)
     # In Docker we use gunicorn (see Dockerfile).
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=False)
