@@ -33,13 +33,15 @@ jobs:
         run: |
           pip install -r requirements.txt
           echo "Running Safety scan..."
-          safety scan --output text
+          safety scan
 
       - name: Run Bandit (Python code security)
         run: |
           echo "Running Bandit scan..."
-          bandit -r src/ -f json -o bandit-report.json
-          bandit -r src/ -f txt
+          # Create JSON report even if issues are found
+          bandit -r src/ -f json -o bandit-report.json || true
+          # Display results in terminal (this will fail the step if issues found)
+          bandit -r src/
 
       - name: Upload Bandit results
         uses: actions/upload-artifact@v4
@@ -47,6 +49,7 @@ jobs:
         with:
           name: bandit-security-report
           path: bandit-report.json
+          if-no-files-found: ignore
 
       - name: Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
