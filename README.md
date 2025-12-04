@@ -28,7 +28,7 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 ## Features
 
 - **Live System Metrics**: CPU, RAM, Disk, and Network usage via Flask API
-- **12 Animated Themes**: Cyberpunk, Synthwave, Cybersecurity, Space, and more
+- **Several Animated Themes**: Cyberpunk, Synthwave, Cybersecurity, Space, and more
 - **Canvas Animations**: Unique background effects per theme
 - **Auto-fallback**: Randomized stats when API is unreachable
 - **Config-driven**: Theme and settings in `config.json`
@@ -56,8 +56,6 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
    ```json
    {
      "theme": "ice-blue",
-     "image": "",
-     "showImage": false,
      "title": "My Desktop",
      "showTitle": false,
      "apiBase": "http://localhost:5000"

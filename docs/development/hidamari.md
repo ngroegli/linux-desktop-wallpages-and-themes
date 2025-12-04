@@ -1,9 +1,51 @@
-# Hidamari (for wallpapers)
+# Hidamari Integration
 
-This repository integrates with Hidamari for web-based wallpaper management. Place themes and wallpaper metadata in the `theme/` folder.
+[Hidamari](https://github.com/jeffshee/hidamari) is an animated wallpaper engine that can display HTML files as desktop backgrounds.
 
-Hidamari-specific notes:
-- Hidamari expects theme JSON and images. Use `theme/example_theme.json` as a starting point.
-- The Flask API provides system information which the Hidamari-powered UI can poll to show system overlays or adapt wallpapers based on system state.
+## How This Project Works with Hidamari
 
-See `docs/ARCHITECTURE.md` for how the pieces fit together.
+Hidamari requires **single-file HTML wallpapers** with all dependencies embedded (CSS, JavaScript, assets). It cannot load external files or make external HTTP requests reliably.
+
+### Compilation Process
+
+Use the `build.sh` script to compile themes into standalone HTML files:
+
+```bash
+cd ~/WallpagesThemes
+./build.sh
+```
+
+This generates single-file wallpapers in `~/WallpagesThemes/compiled/`:
+- `wallpaper-matrix-green-blue.html`
+- `wallpaper-ice-blue.html`
+- `wallpaper-threat-map.html`
+- ... (one for each of the 12 themes)
+
+### What Gets Embedded
+
+Each compiled wallpaper contains:
+- ✅ **All CSS** - Inlined into `<style>` tags
+- ✅ **All JavaScript** - Embedded inline (template.js, background-manager.js, theme-specific background.js)
+- ✅ **Theme configuration** - Colors, settings baked into the code
+- ✅ **Animation logic** - Canvas 2D drawing code
+- ❌ **No external files** - No network requests, no file loading
+
+### Limitations with Hidamari
+
+Because Hidamari isolates the HTML file:
+- **Static theme** - Cannot switch themes (each file is one theme)
+- **No config changes** - Configuration is embedded at build time
+
+For dynamic features (API polling, theme switching), use the multi-file version in a browser instead.
+
+### Setting Up Hidamari
+
+1. Build the wallpapers: `./build.sh`
+2. Install Hidamari: See [installation guide](https://github.com/jeffshee/hidamari)
+3. Add wallpaper in Hidamari UI:
+   - Click "Add"
+   - Navigate to `~/WallpagesThemes/compiled/`
+   - Select `wallpaper-<theme>.html`
+   - Apply
+
+See `docs/architecture/` for complete system architecture diagrams.
