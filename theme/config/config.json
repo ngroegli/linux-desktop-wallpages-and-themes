@@ -3,5 +3,5 @@
   "title": "My Desktop",
   "showTitle": false,
   "apiBase": "http://localhost:5000",
-  "_comment": "Available themes: matrix-green-blue, ice-blue, ubuntu, clair-obscur. Set showTitle to true to display the center title."
+  "_comment": "Available themes: matrix-rain, arctic, ubuntu, clair-obscur, synth-grid, etc. Set showTitle to true to display the center title."
 }

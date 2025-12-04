@@ -62,8 +62,8 @@ docs/
 - **OpenBar Integration**: GNOME Shell color matching
 
 ### Available Themes
-1. **matrix-green-blue** - Cyberpunk matrix rain
-2. **ice-blue** - Arctic icebergs with aurora
+1. **matrix-rain** - Cyberpunk matrix rain
+2. **arctic** - Arctic icebergs with aurora
 3. **ubuntu** - Ubuntu Circle of Friends
 4. **clair-obscur** - Art Deco golden geometry
 5. **sunset-equalizer** - Audio equalizer visualization
@@ -90,7 +90,7 @@ sudo ./install.sh
 Edit `~/WallpagesThemes/config/config.json`:
 ```json
 {
-  "theme": "matrix-green-blue",
+  "theme": "matrix-rain",
   "title": "My Desktop",
   "showTitle": false,
   "apiBase": "http://localhost:5000"

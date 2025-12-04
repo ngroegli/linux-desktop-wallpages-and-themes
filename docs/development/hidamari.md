@@ -16,8 +16,8 @@ cd ~/WallpagesThemes
 ```
 
 This generates single-file wallpapers in `~/WallpagesThemes/compiled/`:
-- `wallpaper-matrix-green-blue.html`
-- `wallpaper-ice-blue.html`
+- `wallpaper-matrix-rain.html`
+- `wallpaper-arctic.html`
 - `wallpaper-threat-map.html`
 - ... (one for each of the 12 themes)
 
