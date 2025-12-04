@@ -138,6 +138,7 @@ jobs:
             theme/compiled/ \
             theme/config/ \
             theme/base/ \
+            theme/themes/ \
             src/ \
             docs/ \
             README.md \
@@ -248,7 +249,8 @@ jobs:
           echo "- 📁 **theme/compiled/** - Pre-built single-file HTML wallpapers" >> CHANGELOG.md
           echo "- 📁 **theme/base/** - Base templates for browser usage" >> CHANGELOG.md
           echo "- 📁 **theme/config/** - Theme configuration files" >> CHANGELOG.md
-          echo "- 🐍 **src/** - Python API for system metrics" >> CHANGELOG.md
+          echo "- � **theme/themes/** - All 12 theme implementations (theme.json, background.js, openbar-theme-config)" >> CHANGELOG.md
+          echo "- �🐍 **src/** - Python API for system metrics" >> CHANGELOG.md
           echo "- 📚 **docs/** - Complete documentation" >> CHANGELOG.md
           echo "- 🔧 **install.sh** - Automated installation script" >> CHANGELOG.md
           echo "- 🔨 **build.sh** - Build script for custom themes" >> CHANGELOG.md
