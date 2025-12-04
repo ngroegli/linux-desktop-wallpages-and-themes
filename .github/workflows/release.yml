@@ -132,16 +132,28 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           ARCHIVE_NAME="wallpapers-${VERSION}.tar.gz"
 
-          echo "📦 Creating release archive: $ARCHIVE_NAME"
+          echo "📦 Creating complete release archive: $ARCHIVE_NAME"
           tar -czf "$ARCHIVE_NAME" \
+            --transform 's,^,linux-desktop-wallpapers/,' \
             theme/compiled/ \
             theme/config/ \
+            theme/base/ \
+            src/ \
+            docs/ \
             README.md \
             LICENSE \
             install.sh \
-            requirements.txt
+            build.sh \
+            requirements.txt \
+            web-wallpaper-api.service \
+            docker-compose.yml \
+            .htmlvalidate.json
 
           echo "archive_name=$ARCHIVE_NAME" >> $GITHUB_OUTPUT
+          echo "📊 Archive contents:"
+          tar -tzf "$ARCHIVE_NAME" | head -20
+          echo "..."
+          echo "📦 Archive size:"
           ls -lh "$ARCHIVE_NAME"
 
       - name: Generate changelog
@@ -186,16 +198,45 @@ jobs:
           done
 
           echo "" >> CHANGELOG.md
-          echo "### 📥 Installation" >> CHANGELOG.md
+          echo "### 📥 Installation from Release" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
+          echo "#### Quick Install (Wallpapers Only)" >> CHANGELOG.md
           echo '```bash' >> CHANGELOG.md
           echo "# Download and extract" >> CHANGELOG.md
+          echo "wget https://github.com/ngroegli/linux-desktop-wallpages-and-themes/releases/download/${VERSION}/wallpapers-${VERSION}.tar.gz" >> CHANGELOG.md
           echo "tar -xzf wallpapers-${VERSION}.tar.gz" >> CHANGELOG.md
+          echo "cd linux-desktop-wallpapers" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
-          echo "# Run installation script" >> CHANGELOG.md
+          echo "# Install wallpapers (copies to ~/WallpagesThemes/)" >> CHANGELOG.md
           echo "chmod +x install.sh" >> CHANGELOG.md
           echo "./install.sh" >> CHANGELOG.md
           echo '```' >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "#### Full Install with API (Optional)" >> CHANGELOG.md
+          echo '```bash' >> CHANGELOG.md
+          echo "# Install Python dependencies" >> CHANGELOG.md
+          echo "python3 -m venv .venv" >> CHANGELOG.md
+          echo "source .venv/bin/activate" >> CHANGELOG.md
+          echo "pip install -r requirements.txt" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "# Start API server (optional, for system metrics)" >> CHANGELOG.md
+          echo "python src/app.py" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "# Or install as systemd service" >> CHANGELOG.md
+          echo "sudo cp web-wallpaper-api.service /etc/systemd/system/" >> CHANGELOG.md
+          echo "sudo systemctl enable --now web-wallpaper-api.service" >> CHANGELOG.md
+          echo '```' >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "#### What's Included" >> CHANGELOG.md
+          echo "- 📁 **theme/compiled/** - Ready-to-use single-file HTML wallpapers" >> CHANGELOG.md
+          echo "- 📁 **theme/base/** - Base templates for customization" >> CHANGELOG.md
+          echo "- 📁 **theme/config/** - Theme configuration files" >> CHANGELOG.md
+          echo "- 🐍 **src/** - Python API for system metrics (optional)" >> CHANGELOG.md
+          echo "- 📚 **docs/** - Complete documentation" >> CHANGELOG.md
+          echo "- 🔧 **install.sh** - Installation script" >> CHANGELOG.md
+          echo "- 🔨 **build.sh** - Build script for custom themes" >> CHANGELOG.md
+          echo "- ⚙️ **web-wallpaper-api.service** - Systemd service file" >> CHANGELOG.md
+          echo "- 🐳 **docker-compose.yml** - Docker deployment" >> CHANGELOG.md
 
           # Output for GitHub
           cat CHANGELOG.md
@@ -222,9 +263,10 @@ jobs:
           prerelease: ${{ github.event.inputs.prerelease || false }}
           files: |
             ${{ steps.archive.outputs.archive_name }}
-            theme/compiled/*.html
             README.md
             LICENSE
+            install.sh
+            web-wallpaper-api.service
           generate_release_notes: true
 
       - name: Upload build artifacts
