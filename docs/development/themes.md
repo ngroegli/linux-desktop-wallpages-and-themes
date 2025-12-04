@@ -391,7 +391,7 @@ Normalized: [1.0, 0.42, 0.21]
    python src/app.py
 
    # Open wallpaper with theme
-   xdg-open theme/_base/background.html
+   xdg-open theme/base/background.html
    ```
 
 3. **Build and test single file:**
