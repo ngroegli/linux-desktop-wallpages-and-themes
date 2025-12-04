@@ -35,7 +35,7 @@ The Web Desktop Wallpaper system is a **three-tier client-server application** t
   - Live clock and date display
   - System metrics panels (SYSTEM/OS, CPU, RAM, Disk, Network)
   - Theme-specific background animations
-  - Configurable center title/image
+  - Configurable center title
   - Automatic fallback to randomized data
 
 #### Core JavaScript Modules

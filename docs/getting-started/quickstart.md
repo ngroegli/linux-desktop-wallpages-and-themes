@@ -50,7 +50,6 @@ Edit `~/WallpagesThemes/config/config.json`:
 ```json
 {
   "theme": "ubuntu",
-  "image": "",
   "showImage": false,
   "title": "Your Title Here",
   "showTitle": false,

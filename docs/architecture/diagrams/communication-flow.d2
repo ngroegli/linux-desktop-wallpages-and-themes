@@ -16,6 +16,22 @@ title: {
   }
 }
 
+note: {
+  label: |md
+    **Two Usage Modes:**
+    • **Single-File (Hidamari):** Standalone wallpaper-*.html with embedded CSS/JS
+    • **Multi-File (Browser):** Dynamic background.html loading external files + API
+  |
+  near: top-center
+  shape: text
+  style: {
+    font-size: 14
+    fill: "#fff3e0"
+    stroke: "#e65100"
+    stroke-width: 2
+  }
+}
+
 # ============================================================================
 # SEQUENCE 1: INSTALLATION & SETUP
 # ============================================================================
@@ -83,7 +99,7 @@ sequence1: Installation & Setup {
     style.stroke-width: 2
   }
 
-  s1_systemd -> s1_api: 6. Start Flask API\n(port 5050) {
+  s1_systemd -> s1_api: 6. Start Flask API\n(port 5000) {
     style.stroke: "#4caf50"
     style.stroke-width: 2
     style.animated: true
@@ -175,112 +191,173 @@ sequence2: Build Process {
 }
 
 # ============================================================================
-# SEQUENCE 3: WALLPAPER INITIALIZATION
+# SEQUENCE 3A: HIDAMARI - SINGLE FILE WALLPAPER (STANDALONE)
 # ============================================================================
-sequence3: Wallpaper Initialization {
+sequence3a: Hidamari Single-File Mode {
   shape: rectangle
   style.fill: "#e1f5fe"
   style.stroke: "#0277bd"
   style.stroke-width: 3
 
-  s3_title: {
+  s3a_title: {
     shape: text
-    label: "🚀 SEQUENCE 3: Wallpaper Initialization"
+    label: "🚀 SEQUENCE 3A: Hidamari - Single HTML File (Standalone)"
     style.font-size: 18
     style.bold: true
   }
 
-  s3_user: User {
+  s3a_user: User {
     shape: person
     style.fill: "#b3e5fc"
   }
 
-  s3_hidamari: Hidamari / Browser {
+  s3a_hidamari: Hidamari {
     shape: rectangle
     style.fill: "#81d4fa"
   }
 
-  s3_html: background.html {
+  s3a_html: wallpaper-<theme>.html {
     shape: page
     style.fill: "#ffffff"
     style.stroke: "#0277bd"
+    label: "Single HTML file\n• CSS inlined\n• JS embedded\n• Theme data embedded\n• No external files"
   }
 
-  s3_template: template.js {
-    shape: stored_data
-    style.fill: "#4fc3f7"
-  }
-
-  s3_config: config.json {
-    shape: cylinder
-    style.fill: "#ffeb3b"
-    style.stroke: "#f57f17"
-  }
-
-  s3_theme: Theme Files {
-    shape: rectangle
-    style.fill: "#29b6f6"
-  }
-
-  s3_bgmgr: background-manager.js {
-    shape: stored_data
-    style.fill: "#03a9f4"
-  }
-
-  s3_canvas: Canvas 2D {
+  s3a_canvas: Canvas 2D {
     shape: rectangle
     style.fill: "#039be5"
   }
 
   # Init flow
-  s3_user -> s3_hidamari: 1. Sets wallpaper {
+  s3a_user -> s3a_hidamari: 1. Sets wallpaper\nwallpaper-<theme>.html {
     style.stroke: "#0277bd"
     style.stroke-width: 2
   }
 
-  s3_hidamari -> s3_html: 2. Loads HTML {
+  s3a_hidamari -> s3a_html: 2. Loads single HTML file {
     style.stroke: "#0288d1"
     style.stroke-width: 2
   }
 
-  s3_html -> s3_template: 3. Executes template.js {
-    style.stroke: "#0288d1"
-    style.stroke-width: 2
-  }
-
-  s3_template -> s3_config: 4. Fetches config.json\n(which theme to load) {
-    style.stroke: "#f57f17"
-    style.stroke-width: 2
-  }
-
-  s3_config -> s3_template: 5. Returns active theme name {
-    style.stroke: "#f57f17"
-    style.stroke-width: 2
-  }
-
-  s3_template -> s3_theme: 6. Loads theme.json\n(colors, settings) {
-    style.stroke: "#0288d1"
-    style.stroke-width: 2
-  }
-
-  s3_template -> s3_bgmgr: 7. Calls background-manager\nto start animation {
-    style.stroke: "#039be5"
-    style.stroke-width: 2
-  }
-
-  s3_bgmgr -> s3_theme: 8. Dynamically loads\ntheme/*/background.js {
-    style.stroke: "#039be5"
-    style.stroke-width: 2
-  }
-
-  s3_bgmgr -> s3_canvas: 9. Initializes Canvas 2D\nStarts animation loop {
+  s3a_html -> s3a_canvas: 3. Executes embedded JS\nInitializes Canvas 2D\nStarts animation loop {
     style.stroke: "#0277bd"
+    style.stroke-width: 3
+    style.animated: true
+    label: "All code & data embedded\nNo external dependencies"
+  }
+
+  s3a_canvas -> s3a_user: 4. Wallpaper ready!\n(No API, no file loading) {
+    style.stroke: "#0277bd"
+    style.stroke-width: 2
+  }
+}
+
+# ============================================================================
+# SEQUENCE 3B: BROWSER - MULTI-FILE MODE (WITH API)
+# ============================================================================
+sequence3b: Browser Multi-File Mode {
+  shape: rectangle
+  style.fill: "#fff9c4"
+  style.stroke: "#f57f17"
+  style.stroke-width: 3
+
+  s3b_title: {
+    shape: text
+    label: "🌐 SEQUENCE 3B: Browser - Multi-File (Dynamic with API)"
+    style.font-size: 18
+    style.bold: true
+  }
+
+  s3b_user: User {
+    shape: person
+    style.fill: "#fff59d"
+  }
+
+  s3b_browser: Browser {
+    shape: rectangle
+    style.fill: "#ffee58"
+  }
+
+  s3b_html: background.html {
+    shape: page
+    style.fill: "#ffffff"
+    style.stroke: "#f57f17"
+  }
+
+  s3b_template: template.js {
+    shape: stored_data
+    style.fill: "#ffeb3b"
+  }
+
+  s3b_config: config.json {
+    shape: cylinder
+    style.fill: "#fdd835"
+  }
+
+  s3b_theme: Theme Files {
+    shape: rectangle
+    style.fill: "#fbc02d"
+  }
+
+  s3b_bgmgr: background-manager.js {
+    shape: stored_data
+    style.fill: "#f9a825"
+  }
+
+  s3b_canvas: Canvas 2D {
+    shape: rectangle
+    style.fill: "#f57f17"
+  }
+
+  # Init flow
+  s3b_user -> s3b_browser: 1. Opens background.html {
+    style.stroke: "#f57f17"
+    style.stroke-width: 2
+  }
+
+  s3b_browser -> s3b_html: 2. Loads HTML {
+    style.stroke: "#ef6c00"
+    style.stroke-width: 2
+  }
+
+  s3b_html -> s3b_template: 3. Loads external template.js {
+    style.stroke: "#ef6c00"
+    style.stroke-width: 2
+  }
+
+  s3b_template -> s3b_config: 4. Fetches config.json\n(which theme to use) {
+    style.stroke: "#e65100"
+    style.stroke-width: 2
+  }
+
+  s3b_config -> s3b_template: 5. Returns active theme name {
+    style.stroke: "#e65100"
+    style.stroke-width: 2
+  }
+
+  s3b_template -> s3b_theme: 6. Loads theme.json\n(colors, settings) {
+    style.stroke: "#ef6c00"
+    style.stroke-width: 2
+  }
+
+  s3b_template -> s3b_bgmgr: 7. Loads background-manager.js {
+    style.stroke: "#ef6c00"
+    style.stroke-width: 2
+  }
+
+  s3b_bgmgr -> s3b_theme: 8. Dynamically loads\ntheme/*/background.js {
+    style.stroke: "#e65100"
+    style.stroke-width: 2
+  }
+
+  s3b_bgmgr -> s3b_canvas: 9. Initializes Canvas 2D\nStarts animation loop {
+    style.stroke: "#f57f17"
     style.stroke-width: 3
     style.animated: true
   }
 
-  s3_template -> s3_user: 10. Wallpaper ready! {
-    style.stroke: "#0277bd"
+  s3b_template -> s3b_user: 10. Wallpaper ready!\n(Can connect to API) {
+    style.stroke: "#f57f17"
     style.stroke-width: 2
   }
 }

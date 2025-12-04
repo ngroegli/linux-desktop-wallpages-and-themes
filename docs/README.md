@@ -54,7 +54,7 @@ docs/
 
 ### System Components
 - **Live Metrics**: Real-time CPU, RAM, Disk, Network stats
-- **12 Themes**: Cyberpunk, Arctic, Ubuntu, Synthwave, and more
+- **Several Themes**: Cyberpunk, Arctic, Ubuntu, Synthwave, and more
 - **Animations**: Canvas-based background effects per theme
 - **Flask API**: Python backend for system metrics
 - **systemd Service**: Auto-start on boot
@@ -181,12 +181,6 @@ Contributions welcome! Areas to contribute:
 - **Features**: Add new metrics or capabilities
 
 See individual development docs for detailed guidelines.
-
-## Version History
-
-- **v2.0** - 12 themes, OpenBar integration, reorganized docs
-- **v1.5** - Cybersecurity themes (threat-map, soc-blueprint, etc.)
-- **v1.0** - Initial release with matrix, ice-blue, ubuntu themes
 
 ---
 
