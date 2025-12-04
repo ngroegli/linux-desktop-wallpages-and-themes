@@ -103,19 +103,17 @@ Edit the theme configuration at `~/WallpagesThemes/config/config.json`:
 ```json
 {
   "theme": "ice-blue",
-  "image": "",
   "title": "Your Title Here",
-  "apiBase": "http://localhost:5000",
-  "backgroundMode": "none"
+  "showTitle": false,
+  "apiBase": "http://localhost:5000"
 }
 ```
 
 Options:
 - **theme**: Theme folder name (see available themes below)
-- **image**: URL or path to center image (empty = no image)
 - **title**: Center title text
+- **showTitle**: Display title on wallpaper (`true` or `false`)
 - **apiBase**: Flask API URL (default: `http://localhost:5000`)
-- **backgroundMode**: Background effect (`none`, `matrix`)
 
 ### 2. Build Single-File Wallpapers (For Hidamari)
 
@@ -137,6 +135,28 @@ xdg-open ~/WallpagesThemes/base/background.html
 
 **For Hidamari (standalone):**
 Use the compiled files: `~/WallpagesThemes/compiled/wallpaper-<theme>.html`
+
+## Optional Integrations
+
+### Hidamari (Animated Desktop Wallpaper)
+
+For using the compiled HTML wallpapers as your desktop background, you can use [Hidamari](https://github.com/jeffshee/hidamari).
+
+After installing Hidamari (see their installation guide), you can set the compiled wallpapers from:
+```
+~/WallpagesThemes/compiled/wallpaper-<theme>.html
+```
+
+### GNOME OpenBar Extension (Matching Panel Theme)
+
+If you use GNOME and the [OpenBar extension](https://extensions.gnome.org/extension/6580/open-bar/), you can import matching theme configurations.
+
+Each theme includes an `openbar-theme-config` file that you can import in OpenBar settings:
+```
+~/WallpagesThemes/themes/<theme-name>/openbar-theme-config
+```
+
+This will match your panel colors to your wallpaper theme for a cohesive desktop appearance
 
 ## API Endpoints
 

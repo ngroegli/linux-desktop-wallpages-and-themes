@@ -235,6 +235,15 @@ jobs:
           echo "- **Browser wallpaper**: Open \`file://\$HOME/WallpagesThemes/base/background.html\`" >> CHANGELOG.md
           echo "- **Hidamari**: Use compiled files from \`~/WallpagesThemes/compiled/wallpaper-<theme>.html\`" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
+          echo "#### Optional Integrations" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "**Hidamari (Animated Desktop Wallpaper):**" >> CHANGELOG.md
+          echo "- Install [Hidamari](https://github.com/jeffshee/hidamari) and use: \`~/WallpagesThemes/compiled/wallpaper-<theme>.html\`" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "**GNOME OpenBar (Matching Panel Theme):**" >> CHANGELOG.md
+          echo "- Install [OpenBar extension](https://extensions.gnome.org/extension/6580/open-bar/)" >> CHANGELOG.md
+          echo "- Import theme config: \`~/WallpagesThemes/themes/<theme-name>/openbar-theme-config\`" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
           echo "#### What's Included" >> CHANGELOG.md
           echo "- 📁 **theme/compiled/** - Pre-built single-file HTML wallpapers" >> CHANGELOG.md
           echo "- 📁 **theme/base/** - Base templates for browser usage" >> CHANGELOG.md

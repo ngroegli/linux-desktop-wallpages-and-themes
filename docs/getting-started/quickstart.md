@@ -112,23 +112,34 @@ sudo systemctl stop web-wallpaper-api
 sudo systemctl disable web-wallpaper-api
 ```
 
-## Building Single-File Wallpapers
+## Advanced Setup
 
-After making changes, rebuild the single-file wallpapers for Hidamari:
+### Hidamari (Animated Desktop Wallpaper)
 
-```bash
-# Build all themes (output to theme/compiled/ directory)
-cd theme && bash ../build.sh
-
-# Or run the installer (rebuilds automatically to ~/WallpagesThemes/)
-sudo ./install.sh
+To use compiled wallpapers as your desktop background, install [Hidamari](https://github.com/jeffshee/hidamari) and point it to:
+```
+~/WallpagesThemes/compiled/wallpaper-<theme>.html
 ```
 
-This generates:
-- `wallpaper-matrix-green-blue.html`
-- `wallpaper-ice-blue.html`
-- `wallpaper-ubuntu.html`
-- `wallpaper-clair-obscur.html`
+### GNOME OpenBar (Matching Panel Theme)
+
+If using the [OpenBar extension](https://extensions.gnome.org/extension/6580/open-bar/), import the matching theme config:
+```
+~/WallpagesThemes/themes/<theme-name>/openbar-theme-config
+```
+
+## Building Single-File Wallpapers
+
+After making changes, rebuild the single-file wallpapers:
+
+```bash
+# Build all themes
+cd ~/WallpagesThemes
+./build.sh
+
+# This generates compiled wallpapers in:
+# ~/WallpagesThemes/compiled/wallpaper-<theme>.html
+```
 
 ## Creating a New Theme
 
