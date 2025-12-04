@@ -55,7 +55,7 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 3. **Configure** (optional) in `~/WallpagesThemes/config/config.json`:
    ```json
    {
-     "theme": "ice-blue",
+     "theme": "arctic",
      "title": "My Desktop",
      "showTitle": false,
      "apiBase": "http://localhost:5000"
@@ -67,17 +67,17 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 ## Available Themes
 
 **Cybersecurity & Tech:**
-- `matrix-green-blue` - Cyberpunk matrix rain animation
+- `matrix-rain` - Cyberpunk matrix rain animation
 - `threat-map` - Global threat intelligence with rotating globe
 - `soc-blueprint` - SOC dashboard with live metrics
-- `cyber-fortress` - Hexagonal defense shields
+- `cyber-grid` - Hexagonal defense shields
 - `circuit-board` - Animated circuit paths
 
 **Artistic & Visual:**
 - `synth-grid` - 80s synthwave retrowave aesthetic
 - `sunset-equalizer` - Audio equalizer visualization
 - `clair-obscur` - Art Deco golden geometry
-- `ice-blue` - Arctic icebergs with aurora
+- `arctic` - Arctic icebergs with aurora
 
 **Space & Sci-Fi:**
 - `ascii-galaxy` - ASCII art star field
@@ -112,8 +112,8 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 │   ├── base/              # Base template files
 │   ├── config/            # Configuration files
 │   └── themes/            # All theme implementations
-│       ├── matrix-green-blue/  # 12 animated themes
-│       ├── ice-blue/           # Each with theme.json + background.js
+│       ├── matrix-rain/  # 12 animated themes
+│       ├── arctic/           # Each with theme.json + background.js
 │       ├── ubuntu/             # + openbar-theme-config for shell colors
 │       └── [9 more themes]/
 ├── src/                   # Flask API backend

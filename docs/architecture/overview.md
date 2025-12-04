@@ -251,7 +251,7 @@ web-desktop-wallpapers/
 │   │   └── config.json             # Global settings
 │   │
 │   └── themes/                     # All theme implementations
-│       ├── matrix-green-blue/      # Example theme
+│       ├── matrix-rain/      # Example theme
 │       │   ├── theme.json          # Theme colors & mode
 │       │   ├── background.js       # Custom animation
 │       │   └── openbar-theme-config  # Shell colors
@@ -284,10 +284,10 @@ web-desktop-wallpapers/
 ├── base/                          # Base templates
 ├── config/                        # Configuration
 ├── themes/                        # All theme implementations
-│   ├── matrix-green-blue/         # Themes (all 12)
+│   ├── matrix-rain/         # Themes (all 12)
 │   └── [other themes]/
 ├── compiled/                      # Built wallpapers (single-file HTML)
-│   ├── wallpaper-matrix-green-blue.html
+│   ├── wallpaper-matrix-rain.html
 │   └── [other wallpaper files]
 └── build.sh                       # Build script
 ```

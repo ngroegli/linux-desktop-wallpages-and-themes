@@ -102,7 +102,7 @@ Edit the theme configuration at `~/WallpagesThemes/config/config.json`:
 
 ```json
 {
-  "theme": "ice-blue",
+  "theme": "arctic",
   "title": "Your Title Here",
   "showTitle": false,
   "apiBase": "http://localhost:5000"

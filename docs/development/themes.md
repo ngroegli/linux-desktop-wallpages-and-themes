@@ -26,12 +26,12 @@ theme/
 │   └── config.json            # Active theme and settings
 │
 └── themes/                    # All theme implementations
-    ├── matrix-green-blue/
+    ├── matrix-rain/
     │   ├── theme.json             # Theme colors and settings
     │   ├── background.js          # Custom background animation
     │   └── openbar-theme-config   # GNOME OpenBar colors
     │
-    ├── ice-blue/
+    ├── arctic/
     │   ├── theme.json
     │   ├── background.js
     │   └── openbar-theme-config
@@ -52,13 +52,13 @@ Each theme folder under `theme/themes/` must contain:
 
 ## Available Themes
 
-### 1. matrix-green-blue
+### 1. matrix-rain
 **Cyberpunk Matrix Theme**
 - Colors: Cyan-green (#00ff88, #00ddff)
 - Background: Falling matrix rain animation
 - Style: High-tech, cyberpunk aesthetic
 
-### 2. ice-blue
+### 2. arctic
 **Arctic Clean Theme**
 - Colors: Light blues (#aeefff, #7fd7ff, #4db8e8)
 - Background: Icebergs with aurora and snowfall
@@ -279,7 +279,7 @@ Available CSS variables for customization:
 // In browser console or custom script
 
 // Load theme by name
-WALLPAPER_TEMPLATE.setThemeName('matrix-green-blue');
+WALLPAPER_TEMPLATE.setThemeName('matrix-rain');
 
 // Apply custom colors
 WALLPAPER_TEMPLATE.applyTheme({
@@ -345,7 +345,7 @@ window.THEME_BACKGROUND = {
 ### Animation Examples
 
 See existing theme implementations:
-- `theme/themes/matrix-green-blue/background.js` - Falling characters
+- `theme/themes/matrix-rain/background.js` - Falling characters
 - `theme/themes/synth-grid/background.js` - 3D perspective grid
 - `theme/themes/threat-map/background.js` - Static network topology
 - `theme/themes/soc-blueprint/background.js` - Multiple layered effects
@@ -358,7 +358,7 @@ OpenBar is a GNOME Shell extension that colors the top bar. Each theme can inclu
 
 1. Copy from existing theme:
    ```bash
-   cp theme/themes/matrix-green-blue/openbar-theme-config theme/themes/my-theme/
+   cp theme/themes/matrix-rain/openbar-theme-config theme/themes/my-theme/
    ```
 
 2. Update accent colors to match your theme:

@@ -58,8 +58,8 @@ Edit `~/WallpagesThemes/config/config.json`:
 ```
 
 Note: Background effects are theme-specific:
-- `matrix-green-blue`: Matrix rain animation
-- `ice-blue`: Arctic scene with icebergs and snowfall
+- `matrix-rain`: Matrix rain animation
+- `arctic`: Arctic scene with icebergs and snowfall
 - `ubuntu`: Animated Ubuntu Circle of Friends logo
 - `clair-obscur`: Art Deco design with golden particles
 
@@ -74,8 +74,8 @@ After building, use the compiled wallpapers:
 
 # Examples
 ~/WallpagesThemes/compiled/wallpaper-ubuntu.html
-~/WallpagesThemes/compiled/wallpaper-ice-blue.html
-~/WallpagesThemes/compiled/wallpaper-matrix-green-blue.html
+~/WallpagesThemes/compiled/wallpaper-arctic.html
+~/WallpagesThemes/compiled/wallpaper-matrix-rain.html
 ```
 
 ### For Browser (Dynamic Multi-File)
@@ -160,7 +160,7 @@ cd ~/WallpagesThemes
 ```
 
 3. (Optional) Create `theme/your-theme-name/background.js` for custom animations
-   - See `theme/matrix-green-blue/background.js` or `theme/ubuntu/background.js` for examples
+   - See `theme/themes/matrix-rain/background.js` or `theme/themes/ubuntu/background.js` for examples
    - Must expose `window.THEME_BACKGROUND = { start, stop }`
 
 4. Update `theme/base/config.json`:
@@ -194,7 +194,7 @@ WALLPAPER_TEMPLATE.applyTheme({
 - **Hidamari wallpapers**: `~/WallpagesThemes/compiled/wallpaper-*.html`
 - **Browser wallpaper**: `~/WallpagesThemes/base/background.html`
 - **Config**: `~/WallpagesThemes/config/config.json`
-- **Themes**: `~/WallpagesThemes/themes/matrix-green-blue/`, etc.
+- **Themes**: `~/WallpagesThemes/themes/matrix-rain/`, etc.
 - **Service File**: `/etc/systemd/system/web-wallpaper-api.service`
 - **Logs**: `sudo journalctl -u web-wallpaper-api`
 
