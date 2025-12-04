@@ -27,30 +27,33 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pylint black isort mypy
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f src/requirements.txt ]; then pip install -r src/requirements.txt; fi
 
-      - name: Lint with flake8
+      - name: Pylint - Check for Critical Errors (E)
         run: |
-          # Stop the build if there are Python syntax errors or undefined names
-          flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
-          # Check for other issues but don't fail
-          flake8 src/ --count --max-complexity=10 --max-line-length=120 --statistics --exit-zero
+          echo "Checking for critical errors..."
+          export PYTHONPATH=src:$PWD
+          pylint src/ --disable=C,W,R,I --enable=E --score=no --msg-template="{path}:{line}:{column}: [{msg_id}({symbol}), {category}] {msg}"
 
-      - name: Check code formatting with black
+      - name: Pylint - Check for Warnings (W)
         run: |
-          black --check --diff src/ || echo "⚠️ Black formatting issues found (non-blocking)"
+          echo "Checking for warnings..."
+          export PYTHONPATH=src:$PWD
+          pylint src/ --disable=C,E,R,I --enable=W --score=no --msg-template="{path}:{line}:{column}: [{msg_id}({symbol}), {category}] {msg}"
+
+      - name: Pylint - Refactoring Suggestions (R)
+        run: |
+          echo "Checking for refactoring suggestions (non-blocking)..."
+          export PYTHONPATH=src:$PWD
+          pylint src/ --disable=C,E,W,I --enable=R --score=no --msg-template="{path}:{line}:{column}: [{msg_id}({symbol}), {category}] {msg}" || echo "⚠️ Refactoring suggestions found (non-blocking)"
         continue-on-error: true
 
-      - name: Check import sorting with isort
+      - name: Pylint - Convention Issues (C)
         run: |
-          isort --check-only --diff src/ || echo "⚠️ Import sorting issues found (non-blocking)"
-        continue-on-error: true
-
-      - name: Lint with pylint
-        run: |
-          pylint src/ --exit-zero --output-format=text --reports=yes
+          echo "Checking for convention issues (non-blocking)..."
+          export PYTHONPATH=src:$PWD
+          pylint src/ --disable=E,W,R,I --enable=C --score=no --msg-template="{path}:{line}:{column}: [{msg_id}({symbol}), {category}] {msg}" || echo "ℹ️ Convention issues found (non-blocking)"
         continue-on-error: true
 
       - name: Type checking with mypy
