@@ -2,8 +2,16 @@
 
 ## Installation (One-time Setup)
 
+### From GitHub Release
+
 ```bash
-# Install Flask API as systemd service
+# Download and extract
+VERSION="v1.0.0"  # Check releases page for latest
+wget https://github.com/ngroegli/linux-desktop-wallpages-and-themes/releases/download/${VERSION}/wallpapers-${VERSION}.tar.gz
+tar -xzf wallpapers-${VERSION}.tar.gz
+cd linux-desktop-wallpapers
+
+# Run installer (creates .venv, installs dependencies, sets up service, copies themes)
 sudo ./install.sh
 
 # Verify service is running
@@ -13,9 +21,31 @@ sudo systemctl status web-wallpaper-api
 curl http://localhost:5000/api/health
 ```
 
-## Configuration
+### From Git Repository
 
-Edit `theme/config/config.json` (or after install: `~/WallpagesThemes/config/config.json`):
+```bash
+# Clone repository
+git clone https://github.com/ngroegli/linux-desktop-wallpages-and-themes.git
+cd linux-desktop-wallpages-and-themes
+
+# Run installer
+sudo ./install.sh
+```
+
+## Post-Installation
+
+### 1. Build Wallpapers (For Hidamari)
+
+```bash
+cd ~/WallpagesThemes
+./build.sh
+```
+
+This creates single-file wallpapers in `~/WallpagesThemes/compiled/`
+
+### 2. Configure Theme (Optional)
+
+Edit `~/WallpagesThemes/config/config.json`:
 
 ```json
 {
@@ -34,15 +64,32 @@ Note: Background effects are theme-specific:
 - `ubuntu`: Animated Ubuntu Circle of Friends logo
 - `clair-obscur`: Art Deco design with golden particles
 
-## Using the Wallpaper
+## Using the Wallpapers
 
-**For Hidamari (single-file):**
-1. After installation, open `~/WallpagesThemes/wallpaper-<theme>.html`
-2. Example: `~/WallpagesThemes/wallpaper-ubuntu.html`
+### For Hidamari (Standalone Single-File)
 
-**For Browser (multi-file):**
-1. Open `~/WallpagesThemes/base/background.html`
-2. Change theme in `config.json`
+After building, use the compiled wallpapers:
+```bash
+# Files location
+~/WallpagesThemes/compiled/wallpaper-<theme>.html
+
+# Examples
+~/WallpagesThemes/compiled/wallpaper-ubuntu.html
+~/WallpagesThemes/compiled/wallpaper-ice-blue.html
+~/WallpagesThemes/compiled/wallpaper-matrix-green-blue.html
+```
+
+### For Browser (Dynamic Multi-File)
+
+```bash
+# Open in browser
+xdg-open ~/WallpagesThemes/base/background.html
+
+# Or directly
+file:///<path-to-home>/WallpagesThemes/base/background.html
+```
+
+Change theme by editing `~/WallpagesThemes/config/config.json`
 
 **Note:** If API is unreachable, stats will be randomized (shows "RANDOMIZED" status)
 

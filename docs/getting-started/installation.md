@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide explains how to install the Web Wallpaper API as a systemd service that starts automatically on system boot.
+This guide explains how to install the Linux Desktop Wallpapers & Themes with the optional Web Wallpaper API service.
 
 ## Prerequisites
 
@@ -8,22 +8,46 @@ This guide explains how to install the Web Wallpaper API as a systemd service th
 - Python 3.8 or higher
 - sudo/root access
 
-## Quick Install
+## Installation Methods
 
-1. Clone or download this repository
-2. Navigate to the repository root
-3. Run the installer with sudo:
+### From GitHub Release (Recommended)
 
+1. **Download the latest release:**
+```bash
+VERSION="v1.0.0"  # Check https://github.com/ngroegli/linux-desktop-wallpages-and-themes/releases for latest
+wget https://github.com/ngroegli/linux-desktop-wallpages-and-themes/releases/download/${VERSION}/wallpapers-${VERSION}.tar.gz
+tar -xzf wallpapers-${VERSION}.tar.gz
+cd linux-desktop-wallpapers
+```
+
+2. **Run the installer:**
 ```bash
 sudo ./install.sh
 ```
 
-The installer will:
-- Create a Python virtual environment at `.venv`
-- Install dependencies from `requirements.txt`
-- Create a systemd service file at `/etc/systemd/system/web-wallpaper-api.service`
-- Enable the service to start on boot
-- Start the service immediately
+### From Git Repository
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/ngroegli/linux-desktop-wallpages-and-themes.git
+cd linux-desktop-wallpages-and-themes
+```
+
+2. **Run the installer:**
+```bash
+sudo ./install.sh
+```
+
+## What the Installer Does
+
+The `install.sh` script automatically:
+- ✅ Creates a Python virtual environment (`.venv`)
+- ✅ Installs Python dependencies from `requirements.txt`
+- ✅ Installs the systemd service (`web-wallpaper-api.service`)
+- ✅ Enables the API service to start on boot
+- ✅ Starts the API service immediately
+- ✅ Copies themes to `~/WallpagesThemes/`
+- ✅ Copies `build.sh` for custom theme compilation
 
 ## Verify Installation
 
@@ -70,9 +94,11 @@ sudo journalctl -u web-wallpaper-api -f
 sudo journalctl -u web-wallpaper-api -n 50
 ```
 
-## Configuration
+## Post-Installation Steps
 
-After installation, configure the wallpaper frontend in `theme/base/config.json`:
+### 1. Configure Themes (Optional)
+
+Edit the theme configuration at `~/WallpagesThemes/config/config.json`:
 
 ```json
 {
@@ -85,11 +111,32 @@ After installation, configure the wallpaper frontend in `theme/base/config.json`
 ```
 
 Options:
-- **theme**: Theme folder name (`matrix-green-blue`, `ice-blue`, `ubuntu`)
+- **theme**: Theme folder name (see available themes below)
 - **image**: URL or path to center image (empty = no image)
 - **title**: Center title text
 - **apiBase**: Flask API URL (default: `http://localhost:5000`)
 - **backgroundMode**: Background effect (`none`, `matrix`)
+
+### 2. Build Single-File Wallpapers (For Hidamari)
+
+If you want to use the wallpapers with Hidamari, build the single-file versions:
+
+```bash
+cd ~/WallpagesThemes
+./build.sh
+```
+
+This creates compiled wallpapers in `~/WallpagesThemes/compiled/wallpaper-<theme>.html`
+
+### 3. Use the Wallpapers
+
+**For Browser (dynamic, needs API):**
+```bash
+xdg-open ~/WallpagesThemes/base/background.html
+```
+
+**For Hidamari (standalone):**
+Use the compiled files: `~/WallpagesThemes/compiled/wallpaper-<theme>.html`
 
 ## API Endpoints
 

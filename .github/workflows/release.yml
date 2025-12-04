@@ -200,43 +200,51 @@ jobs:
           echo "" >> CHANGELOG.md
           echo "### 📥 Installation from Release" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
-          echo "#### Quick Install (Wallpapers Only)" >> CHANGELOG.md
+          echo "#### Quick Install (Recommended)" >> CHANGELOG.md
           echo '```bash' >> CHANGELOG.md
           echo "# Download and extract" >> CHANGELOG.md
           echo "wget https://github.com/ngroegli/linux-desktop-wallpages-and-themes/releases/download/${VERSION}/wallpapers-${VERSION}.tar.gz" >> CHANGELOG.md
           echo "tar -xzf wallpapers-${VERSION}.tar.gz" >> CHANGELOG.md
           echo "cd linux-desktop-wallpapers" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
-          echo "# Install wallpapers (copies to ~/WallpagesThemes/)" >> CHANGELOG.md
-          echo "chmod +x install.sh" >> CHANGELOG.md
-          echo "./install.sh" >> CHANGELOG.md
+          echo "# Run installer (installs to ~/WallpagesThemes/, creates .venv, installs systemd service)" >> CHANGELOG.md
+          echo "sudo ./install.sh" >> CHANGELOG.md
           echo '```' >> CHANGELOG.md
           echo "" >> CHANGELOG.md
-          echo "#### Full Install with API (Optional)" >> CHANGELOG.md
+          echo "The installer automatically:" >> CHANGELOG.md
+          echo "- ✅ Creates Python virtual environment (.venv)" >> CHANGELOG.md
+          echo "- ✅ Installs Python dependencies" >> CHANGELOG.md
+          echo "- ✅ Installs systemd service (web-wallpaper-api.service)" >> CHANGELOG.md
+          echo "- ✅ Copies themes to ~/WallpagesThemes/" >> CHANGELOG.md
+          echo "- ✅ Copies build.sh for custom theme compilation" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "#### Post-Installation" >> CHANGELOG.md
           echo '```bash' >> CHANGELOG.md
-          echo "# Install Python dependencies" >> CHANGELOG.md
-          echo "python3 -m venv .venv" >> CHANGELOG.md
-          echo "source .venv/bin/activate" >> CHANGELOG.md
-          echo "pip install -r requirements.txt" >> CHANGELOG.md
+          echo "# 1. Configure themes (optional)" >> CHANGELOG.md
+          echo "nano ~/WallpagesThemes/config/config.json" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
-          echo "# Start API server (optional, for system metrics)" >> CHANGELOG.md
-          echo "python src/app.py" >> CHANGELOG.md
+          echo "# 2. Build single-file wallpapers for Hidamari" >> CHANGELOG.md
+          echo "cd ~/WallpagesThemes" >> CHANGELOG.md
+          echo "./build.sh" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
-          echo "# Or install as systemd service" >> CHANGELOG.md
-          echo "sudo cp web-wallpaper-api.service /etc/systemd/system/" >> CHANGELOG.md
-          echo "sudo systemctl enable --now web-wallpaper-api.service" >> CHANGELOG.md
+          echo "# 3. Check API service status" >> CHANGELOG.md
+          echo "sudo systemctl status web-wallpaper-api.service" >> CHANGELOG.md
           echo '```' >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "#### Usage" >> CHANGELOG.md
+          echo "- **Browser wallpaper**: Open \`file://\$HOME/WallpagesThemes/base/background.html\`" >> CHANGELOG.md
+          echo "- **Hidamari**: Use compiled files from \`~/WallpagesThemes/compiled/wallpaper-<theme>.html\`" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
           echo "#### What's Included" >> CHANGELOG.md
-          echo "- 📁 **theme/compiled/** - Ready-to-use single-file HTML wallpapers" >> CHANGELOG.md
-          echo "- 📁 **theme/base/** - Base templates for customization" >> CHANGELOG.md
+          echo "- 📁 **theme/compiled/** - Pre-built single-file HTML wallpapers" >> CHANGELOG.md
+          echo "- 📁 **theme/base/** - Base templates for browser usage" >> CHANGELOG.md
           echo "- 📁 **theme/config/** - Theme configuration files" >> CHANGELOG.md
-          echo "- 🐍 **src/** - Python API for system metrics (optional)" >> CHANGELOG.md
+          echo "- 🐍 **src/** - Python API for system metrics" >> CHANGELOG.md
           echo "- 📚 **docs/** - Complete documentation" >> CHANGELOG.md
-          echo "- 🔧 **install.sh** - Installation script" >> CHANGELOG.md
+          echo "- 🔧 **install.sh** - Automated installation script" >> CHANGELOG.md
           echo "- 🔨 **build.sh** - Build script for custom themes" >> CHANGELOG.md
           echo "- ⚙️ **web-wallpaper-api.service** - Systemd service file" >> CHANGELOG.md
-          echo "- 🐳 **docker-compose.yml** - Docker deployment" >> CHANGELOG.md
+          echo "- 🐳 **docker-compose.yml** - Docker deployment option" >> CHANGELOG.md
 
           # Output for GitHub
           cat CHANGELOG.md
