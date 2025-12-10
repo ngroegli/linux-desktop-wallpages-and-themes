@@ -13,6 +13,7 @@
   - [Features](#features)
   - [Quick Start](#quick-start)
   - [Available Themes](#available-themes)
+  - [Screenshots](#screenshots)
   - [Documentation](#documentation)
     - [Getting Started](#getting-started)
     - [Architecture](#architecture)
@@ -85,6 +86,22 @@ A configurable web-based desktop wallpaper system with live system metrics, mult
 
 **Branded:**
 - `ubuntu` - Ubuntu Circle of Friends logo
+
+## Screenshots
+
+Screenshots of some backgrounds.
+
+![Arctic](docs/screenshots/background_arctic.png)
+
+![Circuit Board](docs/screenshots/background_circuit_board.png)
+
+![Cyber Grid](docs/screenshots/background_cyber_grid.png)
+
+![Matrix Grid](docs/screenshots/background_matrix_grid.png)
+
+![Quantim Tunnel](docs/screenshots/background_quantum_tunnel.png)
+
+![Synth Grid](docs/screenshots/background_synth_grid.png)
 
 ## Documentation
 
