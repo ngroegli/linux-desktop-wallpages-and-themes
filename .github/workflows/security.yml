@@ -1,74 +1,22 @@
-name: Weekly Security Scan
+name: Security scan
 
 on:
+  # Scan on every push and pull request to main.
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Weekly scheduled scan (every Monday at 02:00 UTC) to catch
+  # newly published vulnerabilities in unchanged code.
   schedule:
-    # Run every Monday at 2:00 AM UTC
-    - cron: '0 2 * * 1'
-  workflow_dispatch: # Allow manual trigger
+    - cron: "0 4 * * 1"
+  # Allow manual triggering from the Actions UI.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
 
 jobs:
-  security-scan:
-    name: Security Vulnerability Scan
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      issues: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pip-audit bandit
-
-      - name: Run pip-audit (Python dependencies)
-        run: |
-          pip install -r requirements.txt
-          echo "Running pip-audit for dependency vulnerabilities..."
-          pip-audit
-
-      - name: Run Bandit (Python code security)
-        run: |
-          echo "Running Bandit scan..."
-          # Create JSON report even if issues are found
-          bandit -r src/ -f json -o bandit-report.json || true
-          # Display results in terminal (this will fail the step if issues found)
-          bandit -r src/
-
-      - name: Upload Bandit results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: bandit-security-report
-          path: bandit-report.json
-          if-no-files-found: ignore
-
-      - name: Trivy filesystem scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'table'
-          severity: 'CRITICAL,HIGH,MEDIUM'
-          exit-code: '1'
-
-      - name: Create issue on security findings
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🔒 Weekly Security Scan Found Issues',
-              body: 'The weekly security scan has detected potential vulnerabilities. Please review the workflow run and artifacts for details.\n\n**Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
-              labels: ['security', 'automated']
-            })
+  security:
+    uses: ngroegli/github-reusable/.github/workflows/security-reusable.yml@main
