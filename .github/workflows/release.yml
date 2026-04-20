@@ -9,5 +9,61 @@ permissions:
   contents: write
 
 jobs:
+  build-wallpapers:
+    name: Build wallpapers and create archive
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install build dependencies
+        run: sudo apt-get install -y jq
+
+      - name: Build single-file wallpapers
+        run: cd theme && bash ../build.sh
+
+      - name: Verify build output
+        run: |
+          count=$(find theme/compiled -name "*.html" | wc -l)
+          echo "Built $count wallpaper files:"
+          ls theme/compiled/
+          [ "$count" -gt 0 ] || { echo "ERROR: No wallpapers built"; exit 1; }
+
+      - name: Create release archive
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          version="${REF#refs/tags/}"
+          archive="wallpapers-${version}.tar.gz"
+
+          tar -czf "$archive" \
+            --transform 's,^,linux-desktop-wallpapers/,' \
+            theme/compiled/ \
+            theme/config/ \
+            theme/base/ \
+            theme/themes/ \
+            src/ \
+            docs/ \
+            README.md \
+            LICENSE \
+            install.sh \
+            build.sh \
+            requirements.txt \
+            web-wallpaper-api.service \
+            docker-compose.yml
+
+          mkdir -p dist
+          mv "$archive" dist/
+          echo "Archive: $(ls -lh dist/*.tar.gz)"
+
+      - name: Upload wallpaper archive
+        uses: actions/upload-artifact@v6
+        with:
+          name: wallpaper-archive
+          path: dist/*.tar.gz
+          retention-days: 30
+
   release:
+    needs: build-wallpapers
     uses: ngroegli/github-reusable/.github/workflows/release-reusable.yml@main
