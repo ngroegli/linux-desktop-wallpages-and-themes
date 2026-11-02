@@ -1,6 +1,6 @@
 {
-  "theme": "synth-grid",
-  "title": "My Desktop",
+  "theme": "circuit-board",
+  "title": "",
   "showTitle": false,
   "apiBase": "http://localhost:5000",
   "_comment": "Available themes: matrix-rain, arctic, ubuntu, clair-obscur, synth-grid, etc. Set showTitle to true to display the center title."
